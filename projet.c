@@ -18,7 +18,6 @@ typedef struct
 typedef struct
 {
 	int taille;
-	
 
 }plateau;
 
