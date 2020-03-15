@@ -18,6 +18,7 @@ typedef struct
 typedef struct
 {
 	int taille;
+	ligne* l;
 
 }plateau;
 
