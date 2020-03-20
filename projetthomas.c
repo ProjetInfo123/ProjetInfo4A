@@ -124,6 +124,22 @@ bloc cloneBloc(plateau* p,int x,int y)
 int verifBloc(bloc* a,bloc* b,int cote)
 {
 	int erreur=0;
+	if (cote==3)
+	{
+		if((getS(a)!=getN(b)))
+			{
+				erreur++;
+			}
+
+	}
+	if (cote==2)
+	{
+		if((getO(a)!=getE(b)))
+			{
+				erreur++;
+			}
+
+	}
 	if(cote==1)
 	{
 		if((getN(a)!=getS(b)))
@@ -131,7 +147,7 @@ int verifBloc(bloc* a,bloc* b,int cote)
 				erreur++;
 			}
 	}
-	else
+	if(cote==0)
 	{
 		if((getE(a)!=getO(b)))
 		{
@@ -155,7 +171,7 @@ int verifPlateau(plateau* p)
 				{
 					erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i].rangee[j+1]),0);
 					setC1(p,p->l[i].rangee[j]); setC2(p,p->l[i].rangee[j+1]);
-					setCote(p->cplt[erreur],0);
+					setCote(p->cpl[erreur],0);
 
 				}
 			}
@@ -168,41 +184,41 @@ int verifPlateau(plateau* p)
 						{
 							erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i].rangee[j+1]),0);
 							setC1(p,p->l[i].rangee[j]); setC2(p,p->l[i].rangee[j+1]);
-							setCote(p->cplt[erreur],0);
+							setCote(p->cpl[erreur],0);
 							erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i-1].rangee[j]),1);
 							setC1(p,p->l[i].rangee[j]); setC2(p,p->l[i-1].rangee[j]);
-							setCote(p->cplt[erreur],1);
+							setCote(p->cpl[erreur],1);
 						}
 						else
 						{
 					erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i-1].rangee[j]),1);
 					setC1(p,p->l[i].rangee[j]); setC2(p,p->l[i-1].rangee[j]);
-					setCote(p->cplt[erreur],1);
+					setCote(p->cpl[erreur],1);
 						}
 				}
 			else
 			{
 			if(!(j==p->l->taille-1))
 			{
-erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i].rangee[j+1]),0);
-setC1(p,p->l[i].rangee[j]); setC2(p,p->l[i].rangee[j+1]);
-setCote(p->cplt[erreur],0);
-erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i-1].rangee[j]),1);
-setC1(p,p->l[i].rangee[j]); setC2(p,p->l[i-1].rangee[j]);
-setCote(p->cplt[erreur],1);
-}
-else
-{
-erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i-1].rangee[j]),1);
-p->cpl[erreur].setC1(p->l[i].rangee[j]); p->cpl[erreur].setC2(p->l[i-1].rangee[j])
-p->cplt[erreur].setCote(1);
-}
-}
+				erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i].rangee[j+1]),0);
+				setC1(p,p->l[i].rangee[j]); setC2(p,p->l[i].rangee[j+1]);
+				setCote(p->cpl[erreur],0);
+				erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i-1].rangee[j]),1);
+				setC1(p,p->l[i].rangee[j]); setC2(p,p->l[i-1].rangee[j]);
+				setCote(p->cpl[erreur],1);
+				}
+				else
+				{
+				erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i-1].rangee[j]),1);
+				p->cpl[erreur].setC1(p->l[i].rangee[j]); p->cpl[erreur].setC2(p->l[i-1].rangee[j])
+				p->cplt[erreur].setCote(1);
+				}
+				}
 
-}
-}
-}
-return erreur;
+				}
+				}
+				}
+				return erreur;
 }
 
 void affectBloc(ligne* r,bloc* b,int pos)
@@ -227,6 +243,80 @@ void gener(plateau* p)
 
 	}
 }
+
+int verifRound(plateau* p,int x,int y)
+{	bloc b =p->l[x].rangee[y];
+	int erreur;
+	if(x==1)
+	{
+		if(y==1)
+		{
+				erreur+=verifBloc(b,l[x].rangee[y+1],1);
+				erreur+=verifBloc(b,l[x+1].rangee[y],0);
+				return erreur;
+		}
+		else
+		{
+			if(y==p->taille)
+			{
+				erreur+=verifBloc(b,l[x].rangee[y-1],2);
+				erreur+=verifBloc(b,l[x+1].rangee[y],0);
+				return erreur;
+
+			}
+			else
+			{
+				erreur+=verifBloc(b,l[x+1].rangee[y],0);
+				erreur+=verifBloc(b,l[x].rangee[y+1],1);
+				erreur+=verifBloc(b,l[x].rangee[y-1],2);
+				return erreur;
+			}
+
+		}
+	else
+	{
+		if(x==p->taille)
+		{
+			if(y==1)
+			{
+					erreur+=verifBloc(b,l[x].rangee[y+1],1);
+					erreur+=verifBloc(b,l[x-1].rangee[y],3);
+					return erreur;
+			}
+			else
+			{
+				if(y==p->taille)
+				{
+					erreur+=verifBloc(b,l[x].rangee[y-1],2);
+					erreur+=verifBloc(b,l[x-1].rangee[y],3);
+					return erreur;
+
+				}
+				else
+				{
+					erreur+=verifBloc(b,l[x-1].rangee[y],3);
+					erreur+=verifBloc(b,l[x].rangee[y+1],1);
+					erreur+=verifBloc(b,l[x].rangee[y-1],2);
+					return erreur;
+				}
+		}
+		else
+
+		{
+			erreur+=verifBloc(b,l[x+1].rangee[y],0);
+			erreur+=verifBloc(b,l[x-1].rangee[y],3);
+			erreur+=verifBloc(b,l[x].rangee[y+1],1);
+			erreur+=verifBloc(b,l[x].rangee[y-1],2);
+			return erreur;
+
+		}
+
+	}
+
+	}
+
+}
+
 
 void cherchsub(plateau* p,couple c){
 
@@ -322,9 +412,10 @@ void swapBloc(plateau* p,int ax,int ay,int bx,int by)
 {
 	bloc a =p->l[ax].rangee[ay];
 	bloc b = p->l[bx].rangee[by];
+	bloc temp=a;
 
 	p->l[ax].rangee[ay]=b;
-	p->l[bx].rangee[by]=a;
+	p->l[bx].rangee[by]=temp;
 
 
 }
@@ -335,12 +426,12 @@ void swapBloc(plateau* p,int ax,int ay,int bx,int by)
 int LireDX(plateau* p,char* e)
 {
 
-	int m;
+	int l;
 	for(int i=0;i<p->taille;i++){
-		if(e[0]=='a'+i){ m=i;}
+		if(e[0]=='a'+i){ l=i;}
 	}
 
-	return m;
+	return l;
 
 }
 
@@ -348,7 +439,7 @@ int LireDY(plateau* p,char* e)
 {
 	int k;
 	for(int i=0;i<p->taille;i++){
-		if(e[1]==i+1) { k=i+1;}
+		if(e[1]==i+'1') { k=i;}
 	}
 	return k;
 
@@ -357,12 +448,12 @@ int LireDY(plateau* p,char* e)
 int LireFX(plateau* p,char* e)
 {
 
-	int m;
+	int l;
 	for(int i=0;i<p->taille;i++){
-		if(e[2]=='a'+i){ m=i;}
+		if(e[2]=='a'+i){ l=i;}
 	}
 
-	return m;
+	return l;
 
 }
 
@@ -370,7 +461,7 @@ int LireFY(plateau* p,char* e)
 {
 	int k;
 	for(int i=0;i<p->taille;i++){
-		if(e[3]==i+1) { k=i+1;}
+		if(e[3]==i+'1') { k=i;}
 	}
 	return k;
 
