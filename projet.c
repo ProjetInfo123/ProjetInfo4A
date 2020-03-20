@@ -59,19 +59,23 @@ char getS(bloc* b)
 	return b->sud;
 }
 
-void setN(bloc* b,char n){
+void setN(bloc* b,char n)
+{
     b->nord=n;
 }
 
-void setE(bloc* b,char n){
+void setE(bloc* b,char n)
+{
     b->est=n;
 }
 
-void setO(bloc* b,char n){
+void setO(bloc* b,char n)
+{
     b->ouest=n;
 }
 
-void setS(bloc* b,char n){
+void setS(bloc* b,char n)
+{
     b->sud=n;
 }
 

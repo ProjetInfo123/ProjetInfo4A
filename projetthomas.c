@@ -4,7 +4,7 @@
 
 typedef struct
 {
-	char nord,est,ouest,sud;	
+	char nord,est,ouest,sud;
 }bloc;
 
 
@@ -12,7 +12,7 @@ typedef struct
 {
 	int taille;
 	bloc* rangee;
-	
+
 }ligne;
 
 typedef struct
@@ -32,7 +32,7 @@ typedef struct
 
 
 
-	
+
 
 bloc* creerBloc(char n,char e,char s,char o)
 {
@@ -41,8 +41,8 @@ bloc* creerBloc(char n,char e,char s,char o)
 		b->est=e;
 		b->ouest=o;
 		b->sud=s;
-		
-		return b;	
+
+		return b;
 }
 
 
@@ -56,7 +56,7 @@ void setC2(couple c,bloc b){
 
 void setCote(couple c,int x){
 		c.cote=x;
-	
+
 }
 
 
@@ -68,43 +68,43 @@ void freeB(bloc* b)
 char getN(bloc* b)
 {
 	return b->nord;
-}	
+}
 
 char getE(bloc* b)
 {
 	return b->est;
 }
-	
+
 char getO(bloc* b)
 {
 	return b->ouest;
-}	
+}
 
 char getS(bloc* b)
 {
 	return b->sud;
-}	
+}
 
 void setN(bloc* b,char n){
-	
+
 		b->nord=n;
-	
+
 }
 
 void setE(bloc* b,char n){
-	
+
 		b->est=n;
-	
+
 }
 void setO(bloc* b,char n){
-	
+
 		b->ouest=n;
-	
+
 }
 void setS(bloc* b,char n){
-	
+
 		b->sud=n;
-	
+
 }
 
 
@@ -156,7 +156,7 @@ int verifPlateau(plateau* p)
 					erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i].rangee[j+1]),0);
 					setC1(p,p->l[i].rangee[j]); setC2(p,p->l[i].rangee[j+1]);
 					setCote(p->cplt[erreur],0);
-					
+
 				}
 			}
 				else
@@ -211,7 +211,7 @@ void affectBloc(ligne* r,bloc* b,int pos)
 }
 void gener(plateau* p)
 {
-	for(int i=0;i<p->taille;i++)		
+	for(int i=0;i<p->taille;i++)
 	{
 		for(int j=0;j<p->l->taille;j++)
 		{
@@ -221,30 +221,29 @@ void gener(plateau* p)
 			else{
 				bloc* b=creerBloc('A','A','A','A');
 			affectBloc(&(p->l[i]),b,j);	}
-			
-				
+
+
 		}
-		
+
 	}
 }
 
-
 void cherchsub(plateau* p,couple c){
-	
-	
-	
+
+
+
 }
 
 void ordi(plateau* p){
 	int n = verifPlateau(p);
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
 }
 
 
@@ -296,7 +295,7 @@ void dessin(plateau* p){
 void initLigne(ligne* l,int t)
 {
 	l->rangee=(bloc*)malloc(t*sizeof(bloc));
-	l->taille=t;	
+	l->taille=t;
 }
 
 void initPlateau(plateau* p, int t)
@@ -305,7 +304,7 @@ void initPlateau(plateau* p, int t)
 	p->taille=t;
 	for(int i=0;i<t;i++)
 	{
-		initLigne(&(p->l[i]),t);		
+		initLigne(&(p->l[i]),t);
 	}
 	p->cpl=(couple*)malloc((t*t*4)*sizeof(couple));
 }
@@ -326,8 +325,8 @@ void swapBloc(plateau* p,int ax,int ay,int bx,int by)
 
 	p->l[ax].rangee[ay]=b;
 	p->l[bx].rangee[by]=a;
-	
-	
+
+
 }
 
 
@@ -335,14 +334,14 @@ void swapBloc(plateau* p,int ax,int ay,int bx,int by)
 
 int LireDX(plateau* p,char* e)
 {
- 
+
 	int m;
 	for(int i=0;i<p->taille;i++){
 		if(e[0]=='a'+i){ m=i;}
 	}
-	
+
 	return m;
-	
+
 }
 
 int LireDY(plateau* p,char* e)
@@ -352,19 +351,19 @@ int LireDY(plateau* p,char* e)
 		if(e[1]==i+1) { k=i+1;}
 	}
 	return k;
-	
+
 }
 
 int LireFX(plateau* p,char* e)
 {
- 
+
 	int m;
 	for(int i=0;i<p->taille;i++){
 		if(e[2]=='a'+i){ m=i;}
 	}
-	
+
 	return m;
-	
+
 }
 
 int LireFY(plateau* p,char* e)
@@ -374,7 +373,7 @@ int LireFY(plateau* p,char* e)
 		if(e[3]==i+1) { k=i+1;}
 	}
 	return k;
-	
+
 }
 
 
@@ -417,14 +416,14 @@ int main()
 	swapBloc(p,ax,ay,bx,by);
 	//rotaBloc(dd);
 	dessin(p);
-	
-	
-	
+
+
+
 	freeB(b);
 	freeB(c);
-	
-	
-	
-	
-	
-}	
+
+
+
+
+
+}
