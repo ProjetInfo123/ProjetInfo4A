@@ -5,6 +5,7 @@
 typedef struct
 {
 	char nord,est,ouest,sud;
+	int* cote;
 }bloc;
 
 
@@ -15,12 +16,6 @@ typedef struct
 
 }ligne;
 
-typedef struct
-{
-	bloc a;
-	bloc b;
-	int cote;
-}couple;
 
 typedef struct
 {
@@ -41,27 +36,17 @@ bloc* creerBloc(char n,char e,char s,char o)
 		b->est=e;
 		b->ouest=o;
 		b->sud=s;
-
+		cote=(int*)calloc(4,sizeof(int));
 		return b;
 }
 
 
-void setC1(couple c,bloc a){
-	c.a=a;
-}
 
-void setC2(couple c,bloc b){
-	c.a=b;
-}
-
-void setCote(couple c,int x){
-		c.cote=x;
-
-}
 
 
 void freeB(bloc* b)
 {
+	free(b->cote);
 	free(b);
 }
 
@@ -170,9 +155,6 @@ int verifPlateau(plateau* p)
 				if(!(j==p->l->taille-1))
 				{
 					erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i].rangee[j+1]),0);
-					setC1(p,p->l[i].rangee[j]); setC2(p,p->l[i].rangee[j+1]);
-					setCote(p->cpl[erreur],0);
-
 				}
 			}
 				else
@@ -183,17 +165,14 @@ int verifPlateau(plateau* p)
 						if(!(j==p->l->taille-1))
 						{
 							erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i].rangee[j+1]),0);
-							setC1(p,p->l[i].rangee[j]); setC2(p,p->l[i].rangee[j+1]);
-							setCote(p->cpl[erreur],0);
+
 							erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i-1].rangee[j]),1);
-							setC1(p,p->l[i].rangee[j]); setC2(p,p->l[i-1].rangee[j]);
-							setCote(p->cpl[erreur],1);
+
 						}
 						else
 						{
 					erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i-1].rangee[j]),1);
-					setC1(p,p->l[i].rangee[j]); setC2(p,p->l[i-1].rangee[j]);
-					setCote(p->cpl[erreur],1);
+
 						}
 				}
 			else
@@ -201,17 +180,14 @@ int verifPlateau(plateau* p)
 			if(!(j==p->l->taille-1))
 			{
 				erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i].rangee[j+1]),0);
-				setC1(p,p->l[i].rangee[j]); setC2(p,p->l[i].rangee[j+1]);
-				setCote(p->cpl[erreur],0);
+
 				erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i-1].rangee[j]),1);
-				setC1(p,p->l[i].rangee[j]); setC2(p,p->l[i-1].rangee[j]);
-				setCote(p->cpl[erreur],1);
+
 				}
 				else
 				{
 				erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i-1].rangee[j]),1);
-				p->cpl[erreur].setC1(p->l[i].rangee[j]); p->cpl[erreur].setC2(p->l[i-1].rangee[j])
-				p->cplt[erreur].setCote(1);
+
 				}
 				}
 
@@ -245,7 +221,8 @@ void gener(plateau* p)
 }
 
 int verifRound(plateau* p,int x,int y)
-{	bloc b =p->l[x].rangee[y];
+{
+	bloc b =p->l[x].rangee[y];
 	int erreur;
 	if(x==1)
 	{
@@ -273,6 +250,7 @@ int verifRound(plateau* p,int x,int y)
 			}
 
 		}
+	}
 	else
 	{
 		if(x==p->taille)
@@ -300,6 +278,7 @@ int verifRound(plateau* p,int x,int y)
 					return erreur;
 				}
 		}
+	}
 		else
 
 		{
@@ -318,15 +297,23 @@ int verifRound(plateau* p,int x,int y)
 }
 
 
-void cherchsub(plateau* p,couple c){
-
-
-
+void cherchsub(plateau* p,bloc a,bloc b){   //tu dois récuperer le coté problématique entre a et b et avec verifRound et trouver un bloc qui peut se mettre pour réparer ce problème
+	bloc c;
+	int x=0;
+	for(int i=0;i<p->taille;i++)
+	{
+		for(int j=0;j<p->taille;i++)
+		{
+			if(x<=verifRound(p,i,j) && p->l[i].rangee[j])
+			{	x=verifRound(p,i,j);
+				c=p->l[i].rangee[j];
+			}
+		}
+	}
 }
 
 void ordi(plateau* p){
 	int n = verifPlateau(p);
-
 
 
 
