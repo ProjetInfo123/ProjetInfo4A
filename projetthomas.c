@@ -5,7 +5,7 @@
 typedef struct
 {
 	char nord,est,ouest,sud;
-	int* cote;
+	int* cote; //NESW
 }bloc;
 
 
@@ -228,8 +228,16 @@ int verifRound(plateau* p,int x,int y)
 	{
 		if(y==1)
 		{
-				erreur+=verifBloc(b,l[x].rangee[y+1],1);
-				erreur+=verifBloc(b,l[x+1].rangee[y],0);
+			erreur+=verifBloc(b,p->l[x].rangee[y+1],0);
+			if(verifBloc(b,p->l[x].rangee[y+1],1)==1){
+					b.cote[1]=1;
+					p->l[x].rangee[y+1].cote[3]=1;
+			}
+			erreur+=verifBloc(b,p->l[x-1].rangee[y],3);
+			if(verifBloc(b,p->l[x-1].rangee[y],1)==1){
+					b.cote[2]=1;
+					p->l[x-1].rangee[y].cote[0]=1;
+			}
 				return erreur;
 		}
 		else
@@ -237,15 +245,36 @@ int verifRound(plateau* p,int x,int y)
 			if(y==p->taille)
 			{
 				erreur+=verifBloc(b,l[x].rangee[y-1],2);
-				erreur+=verifBloc(b,l[x+1].rangee[y],0);
+				if(verifBloc(b,p->l[x].rangee[y-1],1)==1){
+						b.cote[3]=1;
+						p->l[x].rangee[y-1].cote[1]=1;
+				}
+				erreur+=verifBloc(b,l[x-1].rangee[y],3);
+				if(verifBloc(b,p->l[x-1].rangee[y],3)==1){
+						b.cote[2]=1;
+						p->l[x-1].rangee[y].cote[0]=1
+				}
 				return erreur;
 
 			}
 			else
 			{
-				erreur+=verifBloc(b,l[x+1].rangee[y],0);
-				erreur+=verifBloc(b,l[x].rangee[y+1],1);
+				erreur+=verifBloc(b,l[x-1].rangee[y],3);
+				if(verifBloc(b,p->l[x-1].rangee[y],1)==1){
+						b.cote[2]=1;
+						p->l[x-1].rangee[y].cote[0]=1
+				}
+				erreur+=verifBloc(b,l[x].rangee[y+1],0);
+				if(verifBloc(b,p->l[x].rangee[y+1],1)==1){
+						b.cote[1]=1;
+						p->l[x].rangee[y+1].cote[3]=1
+				}
+
 				erreur+=verifBloc(b,l[x].rangee[y-1],2);
+				if(verifBloc(b,p->l[x].rangee[y-1],1)==1){
+						b.cote[3]=1;
+						p->l[x].rangee[y-1].cote[1]=1
+				}
 				return erreur;
 			}
 
@@ -257,8 +286,16 @@ int verifRound(plateau* p,int x,int y)
 		{
 			if(y==1)
 			{
-					erreur+=verifBloc(b,l[x].rangee[y+1],1);
-					erreur+=verifBloc(b,l[x-1].rangee[y],3);
+					erreur+=verifBloc(b,l[x].rangee[y+1],0);
+					if(verifBloc(b,p->l[x].rangee[y+1],1)==1){
+							b.cote[1]=1;
+							p->l[x].rangee[y+1].cote[3]=1
+					}
+					erreur+=verifBloc(b,l[x+1].rangee[y],1);
+					if(verifBloc(b,p->l[x+1].rangee[y],1)==1){
+							b.cote[0]=1;
+							p->l[x+1].rangee[y].cote[2]=1
+					}
 					return erreur;
 			}
 			else
@@ -266,15 +303,35 @@ int verifRound(plateau* p,int x,int y)
 				if(y==p->taille)
 				{
 					erreur+=verifBloc(b,l[x].rangee[y-1],2);
+					if(verifBloc(b,p->l[x].rangee[y-1],1)==1){
+							b.cote[3]=1;
+							p->l[x].rangee[y-1].cote[1]=1
+					}
 					erreur+=verifBloc(b,l[x-1].rangee[y],3);
+					if(verifBloc(b,p->l[x-1].rangee[y],1)==1){
+							b.cote[2]=1;
+							p->l[x-1].rangee[y].cote[0]=1
+					}
 					return erreur;
 
 				}
 				else
 				{
 					erreur+=verifBloc(b,l[x-1].rangee[y],3);
-					erreur+=verifBloc(b,l[x].rangee[y+1],1);
+					if(verifBloc(b,p->l[x-1].rangee[y],1)==1){
+							b.cote[2]=1;
+							p->l[x-1].rangee[y].cote[0]=1
+					}
+					erreur+=verifBloc(b,l[x+1].rangee[y],1);
+					if(verifBloc(b,p->l[x+1].rangee[y],1)==1){
+							b.cote[0]=1;
+							p->l[x+1].rangee[y].cote[2]=1
+					}
 					erreur+=verifBloc(b,l[x].rangee[y-1],2);
+					if(verifBloc(b,p->l[x].rangee[y-1],1)==1){
+							b.cote[3]=1;
+							p->l[x].rangee[y-1].cote[1]=1
+					}
 					return erreur;
 				}
 		}
@@ -282,10 +339,26 @@ int verifRound(plateau* p,int x,int y)
 		else
 
 		{
-			erreur+=verifBloc(b,l[x+1].rangee[y],0);
+			erreur+=verifBloc(b,l[x].rangee[y+1],0);
+			if(verifBloc(b,p->l[x].rangee[y+1],1)==1){
+					b.cote[1]=1;
+					p->l[x+1].rangee[y].cote[3]=1
+			}
 			erreur+=verifBloc(b,l[x-1].rangee[y],3);
-			erreur+=verifBloc(b,l[x].rangee[y+1],1);
+			if(verifBloc(b,p->l[x-1].rangee[y],1)==1){
+					b.cote[2]=1;
+					p->l[x-1].rangee[y].cote[0]=1
+			}
+			erreur+=verifBloc(b,l[x+1].rangee[y],1);
+			if(verifBloc(b,p->l[x+1].rangee[y],1)==1){
+					b.cote[0]=1;
+					p->l[x+1].rangee[y].cote[2]=1
+			}
 			erreur+=verifBloc(b,l[x].rangee[y-1],2);
+			if(verifBloc(b,p->l[x].rangee[y-1],1)==1){
+					b.cote[3]=1;
+					p->l[x].rangee[y-1].cote[1]=1
+			}
 			return erreur;
 
 		}
@@ -304,10 +377,12 @@ void cherchsub(plateau* p,bloc a,bloc b){   //tu dois récuperer le coté probl�
 	{
 		for(int j=0;j<p->taille;i++)
 		{
-			if(x<=verifRound(p,i,j) && p->l[i].rangee[j])
-			{	x=verifRound(p,i,j);
-				c=p->l[i].rangee[j];
+			for (size_t k = 0; k < count; k++) {   //recuperer le coté faux dans le tableau coté d'un bloc et parcourir le plateau pour trouver un sub qui correspond (faire en sorte que ça résout une faute sans en créer d'autre mais pas obligatoire)
+				switch (a.cote[k]) {
+					case 0:
+				}
 			}
+
 		}
 	}
 }

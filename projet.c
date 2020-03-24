@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 typedef struct
 {
@@ -148,19 +149,19 @@ int verifPlateau(plateau* p)
 	return erreur;
 }
 
-void affectBloc(ligne* r,bloc* b,int pos)
+void affectBloc(plateau* p,bloc* b,int x,int y)
 {
-	r->rangee[pos]=*b;
+	p->l[x].rangee[y]=*b;
 }
 
-void gener(plateau* p)
+void gener(plateau* p)//à suppr plus tard
 {
 	for(int i=0;i<p->taille;i++)
 	{
 		for(int j=0;j<p->l->taille;j++)
 		{
 			bloc* b=creerBloc('A','B','C','D');
-			affectBloc(&(p->l[i]),b,j);
+			affectBloc(p,b,i,j);
 		}
 	}
 }
@@ -231,47 +232,60 @@ void freeL(ligne* l)
 	free(l);
 }
 
-void swapBloc(bloc* a,bloc* b)
+void swapBloc(plateau* p,int ax,int ay,int bx,int by)
 {
-	bloc* c=creerBloc(getN(a),getE(a),getS(a),getO(a));
-	setN(a,getN(b));
-	setE(a,getE(b));
-	setS(a,getS(b));
-	setO(a,getO(b));
-	setN(b,getN(c));
-	setE(b,getE(c));
-	setS(b,getS(c));
-	setO(b,getO(c));
+	bloc a =p->l[ax].rangee[ay];
+	bloc b = p->l[bx].rangee[by];
+	bloc temp=a;
+
+	p->l[ax].rangee[ay]=b;
+	p->l[bx].rangee[by]=temp;
 }
 
-bloc LireD(plateau* p,char* e)
+int LireDX(plateau* p,char* e)
 {
-	int l=0;
-	int k=0;
+
+	int l;
 	for(int i=0;i<p->taille;i++){
 		if(e[0]=='a'+i){ l=i;}
 	}
+
+	return l;
+
+}
+
+int LireDY(plateau* p,char* e)
+{
+	int k;
 	for(int i=0;i<p->taille;i++){
 		if(e[1]==i+'1') { k=i;}
 	}
-
-	return p->l[l].rangee[k];
+	return k;
 
 }
 
-bloc LireF(plateau* p,char* e)
+int LireFX(plateau* p,char* e)
 {
-	int l=0;
-	int k=0;
+
+	int l;
 	for(int i=0;i<p->taille;i++){
 		if(e[2]=='a'+i){ l=i;}
 	}
+
+	return l;
+
+}
+
+int LireFY(plateau* p,char* e)
+{
+	int k;
 	for(int i=0;i<p->taille;i++){
 		if(e[3]==i+'1') { k=i;}
 	}
-	return p->l[l].rangee[k];
+	return k;
 
 }
+
 
 void setLigne(plateau* p,ligne l,int pos)
 {
@@ -308,6 +322,65 @@ void rotaBloc(plateau* p,char* c)
 	p->l[l].rangee[k]=*b2;
 }
 
+void remplirPlateau(plateau* p)
+{
+	plateau* sf;
+	initPlateau(sf,p->taille);
+	srand ( time(NULL) );
+	for(int i=0;i<p->taille;i++)
+	{
+		for(int j=0;j<p->l->taille;j++)
+		{
+			if(i==0)
+			{
+				if(j==0)
+				{
+					int c1=rand()%4;char n='A'+c1;
+					int c2=rand()%4;char e='A'+c2;
+					int c3=rand()%4;char s='A'+c3;
+					int c4=rand()%4;char o='A'+c4;
+					bloc* b=creerBloc(n,e,s,o);
+					affectBloc(sf,b,i,j);
+				}
+				else
+				{
+					int c1=rand()%4;char n='A'+c1;
+					int c2=rand()%4;char e='A'+c2;
+					int c3=rand()%4;char s='A'+c3;
+					bloc* b=creerBloc(n,e,s,getE(&p->l[i].rangee[j-1]));
+					affectBloc(sf,b,i,j);
+				}
+			}
+			else
+			{
+				if(j==0)
+				{
+					int c2=rand()%4;char e='A'+c2;
+					int c3=rand()%4;char s='A'+c3;
+					int c4=rand()%4;char o='A'+c4;
+					bloc* b=creerBloc(getS(&p->l[i-1].rangee[j]),e,s,o);
+					affectBloc(sf,b,i,j);
+				}
+				else
+				{
+					int c2=rand()%4;char e='A'+c2;
+					int c3=rand()%4;char s='A'+c3;
+					bloc* b=creerBloc(getS(&p->l[i-1].rangee[j]),e,s,getE(&p->l[i].rangee[j-1]));
+					affectBloc(sf,b,i,j);
+				}
+			}
+		}
+	}
+
+
+
+
+
+
+
+
+}
+
 int main()
 {
 	bloc* b=creerBloc('A','D','C','C');
@@ -315,14 +388,18 @@ int main()
 	bloc* c=creerBloc('A','D','C','C');
 	plateau* p=(plateau*)malloc(sizeof(plateau));
 	initPlateau(p,4);
-	gener(p);
+	remplirPlateau(p);
 	dessin(p);
 	char* co="a4";
+	printf("\n c'est la vérif du plateau %d\n",verifPlateau(p));
 	rotaBloc(p,co);
 	dessin(p);
-	bloc av=LireD(p,"a4d1");
-	bloc ap=LireF(p,"a4d1");
-	swapBloc(&av,&ap);
+	char* mess="a4d1";
+	int ax=LireDX(p,mess);
+	int ay=LireDY(p,mess);
+	int bx=LireFX(p,mess);
+	int by=LireFY(p,mess);
+	swapBloc(p,ax,ay,bx,by);
 	dessin(p);
 	printf("au nord %c au sud %c à l'est %c à l'ouest %c\n",getN(&p->l[0].rangee[3]),getS(&p->l[0].rangee[3]),getE(&p->l[0].rangee[3]),getO(&p->l[0].rangee[3]));
 	printf("au nord %c au sud %c à l'est %c à l'ouest %c\n",getN(&p->l[3].rangee[0]),getS(&p->l[3].rangee[0]),getE(&p->l[3].rangee[0]),getO(&p->l[3].rangee[0]));
