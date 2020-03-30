@@ -652,7 +652,12 @@ void remplirPlateau(plateau* p)
 	dessin(sf);
 
 	//répartir aléatoirement dans plateau
-
+	/*compteur de cases NULL
+	tant que(compteur inf strict à nb bloc et bloc est null) :
+		prendre bloc
+		appliquer bloc dans p
+		bloc dans sf devient null
+		fin tant que*/
 
 }
 
