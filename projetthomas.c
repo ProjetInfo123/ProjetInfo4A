@@ -94,7 +94,7 @@ int equalsBloc(plateau* p,bloc* a,int bx,int by,int i)
 	 }
 }
 
-int recupErreur(plateau* p,int ax,int ay,int bx,int by)
+int recupErreur(plateau* p,int ax,int ay,int bx,int by) //renvoie le coté problematique entre le bloc en ax,ay et bx,by
 {
 		if(ax=bx)
 		{
@@ -227,7 +227,7 @@ void gener(plateau* p)//à suppr plus tard
 	}
 }
 
-int verifRound(plateau* p,int x,int y)
+int verifRound(plateau* p,int x,int y) //regarder les erreurs que le bloc en x,y a avec les blocs autour de lui et rempli le tableau cote du bloc qui correspond aux erreurs eventuelles
 {
 	bloc b =p->l[x].rangee[y];
 	int erreur;
@@ -395,16 +395,13 @@ int verifRound(plateau* p,int x,int y)
 }
 
 
-void cherchsub(plateau* p,int ax,int ay,int bx,int by,int s)
+void cherchsub(plateau* p,int ax,int ay,int bx,int by)
 {   //tu dois récuperer le coté problématique entre a et b et avec verifRound et trouver un bloc qui peut se mettre pour réparer ce problème
-	bloc top;
 	bloc a=p->l[ax].rangee[ay];
-	int n=1;
-	int q=0;
-	int r=0;
 	int x=verifRound(p,ax,ay);
 	int y=verifRound(p,bx,by);
 	int pb=recupErreur(p,ax,ay,bx,by);
+
 
 						 //comparer les NESW de top et de b pour voir le nombre d'erreur qu'il y aurait si on les swap, garder le nombre d'erreur mn
 	for(int i=0;i<p->taille;i++)
@@ -412,10 +409,15 @@ void cherchsub(plateau* p,int ax,int ay,int bx,int by,int s)
 		for(int j=0;j<p->taille;j++)
 		{
 			 int z=verifBloc(&a,&(p->l[i].rangee[j]),pb);
-			 if(z==0){
-				 int* t=calculpb(p,bx,by,i,j);
-				 int w=verifRound(p,i,j);      //ici tu dois comparer les erreurs de i j avec les erreurs du bloc b, regarde les points commun et garde le bloc le plus semblable avec b qui repare l'erreur avec a
-
+			 if(z==0)
+			 {
+				 int av=verifPlateau(p);
+				 swapBloc(p,bx,by,i,j);
+				 int ap=verifPlateau(p);
+				 if(av<ap)
+				 {
+					 swapBloc(p,bx,by,i,j);            //trouver un moyen de determiner si on swap ou on rota et si on rota bah combien de fois
+				 }
 			 }
 		}
 	}
@@ -686,7 +688,7 @@ void remplirPlateau(plateau* p)
 			tab[k][l]=1;
 		}
 	}
-	
+
 }
 
 int main()
