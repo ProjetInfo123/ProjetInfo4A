@@ -111,10 +111,10 @@ int recupErreur(plateau* p,int ax,int ay,int bx,int by) //renvoie le coté probl
 		}
 }
 
-int* calculpb(plateau* p,int ax, int ay,int bx, int by) //rempli un tableau qui donne les points communs entre les deux blocs
+/*int* calculpb(plateau* p,int ax, int ay,int bx, int by) //rempli un tableau qui donne les points communs entre les deux blocs
 {
 	int tab[4]={0,0,0,0};
-	bloc a=p->l[ax].rangee[ay]
+	bloc a=p->l[ax].rangee[ay];
 	for(int i=0;i<4;i++)
 	{
 		if(equalsBloc(p,&a,bx,by,i)==1)
@@ -123,7 +123,7 @@ int* calculpb(plateau* p,int ax, int ay,int bx, int by) //rempli un tableau qui 
 		}
 	}
 	return tab;
-}
+}*/
 
 int verifBloc(bloc* a,bloc* b,int cote)
 {
@@ -235,14 +235,14 @@ int verifRound(plateau* p,int x,int y) //regarder les erreurs que le bloc en x,y
 	{
 		if(y==1)
 		{
-			erreur+=verifBloc(&b,p->l[x].rangee[y+1],0);
-			if(verifBloc(&b,p->l[x].rangee[y+1],0)==1)
+			erreur+=verifBloc(&b,&p->l[x].rangee[y+1],0);
+			if(verifBloc(&b,&p->l[x].rangee[y+1],0)==1)
 			{
 					b.cote[1]=1;
 					p->l[x].rangee[y+1].cote[3]=1;
 			}
-			erreur+=verifBloc(&b,p->l[x-1].rangee[y],3);
-			if(verifBloc(&b,p->l[x-1].rangee[y],3)==1)
+			erreur+=verifBloc(&b,&p->l[x-1].rangee[y],3);
+			if(verifBloc(&b,&p->l[x-1].rangee[y],3)==1)
 			{
 					b.cote[2]=1;
 					p->l[x-1].rangee[y].cote[0]=1;
@@ -253,41 +253,41 @@ int verifRound(plateau* p,int x,int y) //regarder les erreurs que le bloc en x,y
 		{
 			if(y==p->taille)
 			{
-				erreur+=verifBloc(&b,l[x].rangee[y-1],2);
-				if(verifBloc(&b,p->l[x].rangee[y-1],2)==1)
+				erreur+=verifBloc(&b,&p->l[x].rangee[y-1],2);
+				if(verifBloc(&b,&p->l[x].rangee[y-1],2)==1)
 				{
 						b.cote[3]=1;
 						p->l[x].rangee[y-1].cote[1]=1;
 				}
-				erreur+=verifBloc(&b,l[x-1].rangee[y],3);
-				if(verifBloc(&b,p->l[x-1].rangee[y],3)==1)
+				erreur+=verifBloc(&b,&p->l[x-1].rangee[y],3);
+				if(verifBloc(&b,&p->l[x-1].rangee[y],3)==1)
 				{
 						b.cote[2]=1;
-						p->l[x-1].rangee[y].cote[0]=1
+						p->l[x-1].rangee[y].cote[0]=1;
 				}
 				return erreur;
 
 			}
 			else
 			{
-				erreur+=verifBloc(&b,l[x-1].rangee[y],3);
-				if(verifBloc(&b,p->l[x-1].rangee[y],3)==1)
+				erreur+=verifBloc(&b,&p->l[x-1].rangee[y],3);
+				if(verifBloc(&b,&p->l[x-1].rangee[y],3)==1)
 				{
 						b.cote[2]=1;
-						p->l[x-1].rangee[y].cote[0]=1
+						p->l[x-1].rangee[y].cote[0]=1;
 				}
-				erreur+=verifBloc(&b,l[x].rangee[y+1],0);
-				if(verifBloc(&b,p->l[x].rangee[y+1],0)==1)
+				erreur+=verifBloc(&b,&p->l[x].rangee[y+1],0);
+				if(verifBloc(&b,&p->l[x].rangee[y+1],0)==1)
 				{
 						b.cote[1]=1;
-						p->l[x].rangee[y+1].cote[3]=1
+						p->l[x].rangee[y+1].cote[3]=1;
 				}
 
-				erreur+=verifBloc(&b,l[x].rangee[y-1],2);
-				if(verifBloc(&b,p->l[x].rangee[y-1],2)==1)
+				erreur+=verifBloc(&b,&p->l[x].rangee[y-1],2);
+				if(verifBloc(&b,&p->l[x].rangee[y-1],2)==1)
 				{
 						b.cote[3]=1;
-						p->l[x].rangee[y-1].cote[1]=1
+						p->l[x].rangee[y-1].cote[1]=1;
 				}
 				return erreur;
 			}
@@ -300,17 +300,17 @@ int verifRound(plateau* p,int x,int y) //regarder les erreurs que le bloc en x,y
 		{
 			if(y==1)
 			{
-					erreur+=verifBloc(&b,l[x].rangee[y+1],0);
-					if(verifBloc(&b,p->l[x].rangee[y+1],0)==1)
+					erreur+=verifBloc(&b,&p->l[x].rangee[y+1],0);
+					if(verifBloc(&b,&p->l[x].rangee[y+1],0)==1)
 					{
 							b.cote[1]=1;
-							p->l[x].rangee[y+1].cote[3]=1
+							p->l[x].rangee[y+1].cote[3]=1;
 					}
-					erreur+=verifBloc(&b,l[x+1].rangee[y],1);
-					if(verifBloc(&b,p->l[x+1].rangee[y],1)==1)
+					erreur+=verifBloc(&b,&p->l[x+1].rangee[y],1);
+					if(verifBloc(&b,&p->l[x+1].rangee[y],1)==1)
 					{
 							b.cote[0]=1;
-							p->l[x+1].rangee[y].cote[2]=1
+							p->l[x+1].rangee[y].cote[2]=1;
 					}
 					return erreur;
 			}
@@ -318,40 +318,40 @@ int verifRound(plateau* p,int x,int y) //regarder les erreurs que le bloc en x,y
 			{
 				if(y==p->taille)
 				{
-					erreur+=verifBloc(&b,l[x].rangee[y-1],2);
-					if(verifBloc(&b,p->l[x].rangee[y-1],2)==1)
+					erreur+=verifBloc(&b,&p->l[x].rangee[y-1],2);
+					if(verifBloc(&b,&p->l[x].rangee[y-1],2)==1)
 					{
 							b.cote[3]=1;
-							p->l[x].rangee[y-1].cote[1]=1
+							p->l[x].rangee[y-1].cote[1]=1;
 					}
-					erreur+=verifBloc(&b,l[x-1].rangee[y],3);
-					if(verifBloc(&b,p->l[x-1].rangee[y],3)==1)
+					erreur+=verifBloc(&b,&p->l[x-1].rangee[y],3);
+					if(verifBloc(&b,&p->l[x-1].rangee[y],3)==1)
 					{
 							b.cote[2]=1;
-							p->l[x-1].rangee[y].cote[0]=1
+							p->l[x-1].rangee[y].cote[0]=1;
 					}
 					return erreur;
 
 				}
 				else
 				{
-					erreur+=verifBloc(&b,l[x-1].rangee[y],3);
-					if(verifBloc(&b,p->l[x-1].rangee[y],3)==1)
+					erreur+=verifBloc(&b,&p->l[x-1].rangee[y],3);
+					if(verifBloc(&b,&p->l[x-1].rangee[y],3)==1)
 					{
 							b.cote[2]=1;
-							p->l[x-1].rangee[y].cote[0]=1
+							p->l[x-1].rangee[y].cote[0]=1;
 					}
-					erreur+=verifBloc(&b,l[x+1].rangee[y],1);
-					if(verifBloc(&b,p->l[x+1].rangee[y],1)==1)
+					erreur+=verifBloc(&b,&p->l[x+1].rangee[y],1);
+					if(verifBloc(&b,&p->l[x+1].rangee[y],1)==1)
 					{
 							b.cote[0]=1;
-							p->l[x+1].rangee[y].cote[2]=1
+							p->l[x+1].rangee[y].cote[2]=1;
 					}
-					erreur+=verifBloc(&b,l[x].rangee[y-1],2);
-					if(verifBloc(&b,p->l[x].rangee[y-1],2)==1)
+					erreur+=verifBloc(&b,&p->l[x].rangee[y-1],2);
+					if(verifBloc(&b,&p->l[x].rangee[y-1],2)==1)
 					{
 							b.cote[3]=1;
-							p->l[x].rangee[y-1].cote[1]=1
+							p->l[x].rangee[y-1].cote[1]=1;
 					}
 					return erreur;
 				}
@@ -360,29 +360,29 @@ int verifRound(plateau* p,int x,int y) //regarder les erreurs que le bloc en x,y
 		else
 
 		{
-			erreur+=verifBloc(&b,l[x].rangee[y+1],0);
-			if(verifBloc(&b,p->l[x].rangee[y+1],0)==1)
+			erreur+=verifBloc(&b,&p->l[x].rangee[y+1],0);
+			if(verifBloc(&b,&p->l[x].rangee[y+1],0)==1)
 			{
 					b.cote[1]=1;
-					p->l[x+1].rangee[y].cote[3]=1
+					p->l[x+1].rangee[y].cote[3]=1;
 			}
-			erreur+=verifBloc(&b,l[x-1].rangee[y],3);
-			if(verifBloc(&b,p->l[x-1].rangee[y],3)==1)
+			erreur+=verifBloc(&b,&p->l[x-1].rangee[y],3);
+			if(verifBloc(&b,&p->l[x-1].rangee[y],3)==1)
 			{
 					b.cote[2]=1;
-					p->l[x-1].rangee[y].cote[0]=1
+					p->l[x-1].rangee[y].cote[0]=1;
 			}
-			erreur+=verifBloc(&b,l[x+1].rangee[y],1);
-			if(verifBloc(&b,p->l[x+1].rangee[y],1)==1)
+			erreur+=verifBloc(&b,&p->l[x+1].rangee[y],1);
+			if(verifBloc(&b,&p->l[x+1].rangee[y],1)==1)
 			{
 					b.cote[0]=1;
-					p->l[x+1].rangee[y].cote[2]=1
+					p->l[x+1].rangee[y].cote[2]=1;
 			}
-			erreur+=verifBloc(&b,l[x].rangee[y-1],2);
-			if(verifBloc(&b,p->l[x].rangee[y-1],2)==1)
+			erreur+=verifBloc(&b,&p->l[x].rangee[y-1],2);
+			if(verifBloc(&b,&p->l[x].rangee[y-1],2)==1)
 			{
 					b.cote[3]=1;
-					p->l[x].rangee[y-1].cote[1]=1
+					p->l[x].rangee[y-1].cote[1]=1;
 			}
 			return erreur;
 
@@ -391,15 +391,56 @@ int verifRound(plateau* p,int x,int y) //regarder les erreurs que le bloc en x,y
 	}
 
 	}
+void swapBloc(plateau* p,int ax,int ay,int bx,int by)
+	{
+		bloc a =p->l[ax].rangee[ay];
+		bloc b = p->l[bx].rangee[by];
+		bloc temp=a;
 
-}
+		p->l[ax].rangee[ay]=b;
+		p->l[bx].rangee[by]=temp;
+	}
 
 
-void cherchsub(plateau* p,int ax,int ay,int bx,int by)
+
+void cherchsub(plateau* p,int ax,int ay)
 {   //tu dois récuperer le coté problématique entre a et b et avec verifRound et trouver un bloc qui peut se mettre pour réparer ce problème
 	bloc a=p->l[ax].rangee[ay];
 	int x=verifRound(p,ax,ay);
-	int y=verifRound(p,bx,by);
+	int bx;
+	int by;
+		for(int m=0;m<4;m++)
+		{
+			int e=a.cote[m]; //NESW
+			if(e)
+			{
+				switch(m)
+				{
+					case 0:
+					{
+						bx=ax-1;
+						by=ay;
+						break;
+					}
+					case 1:
+					{
+						bx=ax+1;
+						by=ay;
+						break;
+					}
+					case 2:
+					{
+						bx=ax;
+						by=ay+1;
+						break;
+					}
+					case 3:
+					{
+						bx=ax;
+						by=ay-1;
+						break;
+					}
+				}
 	int pb=recupErreur(p,ax,ay,bx,by);
 
 
@@ -418,26 +459,16 @@ void cherchsub(plateau* p,int ax,int ay,int bx,int by)
 				 {
 					 swapBloc(p,bx,by,i,j);            //trouver un moyen de determiner si on swap ou on rota et si on rota bah combien de fois
 				 }
-			 }
+			 	}
+			}
 		}
 	}
-
-
+}
 
 
 }
 
-void ordi(plateau* p)
-{
-	int n = verifPlateau(p);
 
-
-
-
-
-
-
-}
 
 
 
@@ -512,15 +543,7 @@ void freeL(ligne* l)
 	free(l);
 }
 
-void swapBloc(plateau* p,int ax,int ay,int bx,int by)
-{
-	bloc a =p->l[ax].rangee[ay];
-	bloc b = p->l[bx].rangee[by];
-	bloc temp=a;
 
-	p->l[ax].rangee[ay]=b;
-	p->l[bx].rangee[by]=temp;
-}
 
 int LireDX(plateau* p,char* e)
 {
@@ -689,6 +712,53 @@ void remplirPlateau(plateau* p)
 		}
 	}
 
+}
+
+
+void ordi(plateau* p)
+{
+	while(verifPlateau(p)!=0)
+	{
+		int n;
+		int m;
+		do{
+
+			n= verifPlateau(p);
+			for(int i=0;i<p->taille;i++)
+			{
+				for(int j=0;j<p->l->taille;j++)
+				{
+					cherchsub(p,i,j);
+				}
+			}
+			m=verifPlateau(p);
+		}while(n!=m);
+
+
+		for(int i=0;i<p->taille;i++)
+		{
+			for(int j=0;j<p->l->taille;j++)
+			{
+				for(int k=0;k<4;k++)
+				{
+					int n = verifPlateau(p);
+					char c[3];
+		      c[0]='a'+i;
+			    c[1]='1'+j;
+		      c[2]='\0';
+					rotaBloc(p,c);
+					int m = verifPlateau(p);
+					if(n<m)
+					{
+						for(int l=0;l<4-k;l++)
+						{
+							rotaBloc(p,c);
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 int main()
