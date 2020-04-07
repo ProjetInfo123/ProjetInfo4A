@@ -128,7 +128,7 @@ int recupErreur(plateau* p,int ax,int ay,int bx,int by) //renvoie le coté probl
 int verifBloc(bloc* a,bloc* b,int cote)
 {
 	int erreur=0;
-	if (cote==3)
+	if (cote==2)
 	{
 		if((getS(a)!=getN(b)))
 			{
@@ -136,7 +136,7 @@ int verifBloc(bloc* a,bloc* b,int cote)
 			}
 
 	}
-	if (cote==2)
+	if (cote==3)
 	{
 		if((getO(a)!=getE(b)))
 			{
@@ -144,14 +144,14 @@ int verifBloc(bloc* a,bloc* b,int cote)
 			}
 
 	}
-	if(cote==1)
+	if(cote==0)
 	{
 		if((getN(a)!=getS(b)))
 			{
 				erreur++;
 			}
 	}
-	if(cote==0)
+	if(cote==1)
 	{
 		if((getE(a)!=getO(b)))
 		{
@@ -230,61 +230,61 @@ void gener(plateau* p)//à suppr plus tard
 int verifRound(plateau* p,int x,int y) //regarder les erreurs que le bloc en x,y a avec les blocs autour de lui et rempli le tableau cote du bloc qui correspond aux erreurs eventuelles
 {
 	bloc b =p->l[x].rangee[y];
-	int erreur;
-	if(x==1)
-	{
-		if(y==1)
+	int erreur=0;
+	if(x==0)
+	{printf("\n je suis là");
+		if(y==0)
 		{
-			erreur+=verifBloc(&b,&p->l[x].rangee[y+1],0);
-			if(verifBloc(&b,&p->l[x].rangee[y+1],0)==1)
+			erreur+=verifBloc(&b,&p->l[x].rangee[y+1],1);
+			if(verifBloc(&b,&p->l[x].rangee[y+1],1)==1)
 			{
 					b.cote[1]=1;
 					p->l[x].rangee[y+1].cote[3]=1;
 			}
-			erreur+=verifBloc(&b,&p->l[x-1].rangee[y],3);
-			if(verifBloc(&b,&p->l[x-1].rangee[y],3)==1)
+			erreur+=verifBloc(&b,&p->l[x+1].rangee[y],2);
+			if(verifBloc(&b,&p->l[x+1].rangee[y],2)==1)
 			{
 					b.cote[2]=1;
-					p->l[x-1].rangee[y].cote[0]=1;
+					p->l[x+1].rangee[y].cote[0]=1;
 			}
 				return erreur;
 		}
 		else
 		{
-			if(y==p->taille)
+			if(y==p->taille-1)
 			{
-				erreur+=verifBloc(&b,&p->l[x].rangee[y-1],2);
-				if(verifBloc(&b,&p->l[x].rangee[y-1],2)==1)
+				erreur+=verifBloc(&b,&p->l[x].rangee[y-1],3);
+				if(verifBloc(&b,&p->l[x].rangee[y-1],3)==1)
 				{
 						b.cote[3]=1;
 						p->l[x].rangee[y-1].cote[1]=1;
 				}
-				erreur+=verifBloc(&b,&p->l[x-1].rangee[y],3);
-				if(verifBloc(&b,&p->l[x-1].rangee[y],3)==1)
+				erreur+=verifBloc(&b,&p->l[x+1].rangee[y],2);
+				if(verifBloc(&b,&p->l[x+1].rangee[y],2)==1)
 				{
 						b.cote[2]=1;
-						p->l[x-1].rangee[y].cote[0]=1;
+						p->l[x+1].rangee[y].cote[0]=1;
 				}
 				return erreur;
 
 			}
 			else
 			{
-				erreur+=verifBloc(&b,&p->l[x-1].rangee[y],3);
-				if(verifBloc(&b,&p->l[x-1].rangee[y],3)==1)
+				erreur+=verifBloc(&b,&p->l[x+1].rangee[y],2);
+				if(verifBloc(&b,&p->l[x+1].rangee[y],2)==1)
 				{
 						b.cote[2]=1;
-						p->l[x-1].rangee[y].cote[0]=1;
+						p->l[x+1].rangee[y].cote[0]=1;
 				}
-				erreur+=verifBloc(&b,&p->l[x].rangee[y+1],0);
-				if(verifBloc(&b,&p->l[x].rangee[y+1],0)==1)
+				erreur+=verifBloc(&b,&p->l[x].rangee[y+1],1);
+				if(verifBloc(&b,&p->l[x].rangee[y+1],1)==1)
 				{
 						b.cote[1]=1;
 						p->l[x].rangee[y+1].cote[3]=1;
 				}
 
-				erreur+=verifBloc(&b,&p->l[x].rangee[y-1],2);
-				if(verifBloc(&b,&p->l[x].rangee[y-1],2)==1)
+				erreur+=verifBloc(&b,&p->l[x].rangee[y-1],3);
+				if(verifBloc(&b,&p->l[x].rangee[y-1],3)==1)
 				{
 						b.cote[3]=1;
 						p->l[x].rangee[y-1].cote[1]=1;
@@ -296,59 +296,59 @@ int verifRound(plateau* p,int x,int y) //regarder les erreurs que le bloc en x,y
 	}
 	else
 	{
-		if(x==p->taille)
-		{
-			if(y==1)
+		if(x==p->taille-1)
+		{printf("\n je suis là3");
+			if(y==0)
 			{
-					erreur+=verifBloc(&b,&p->l[x].rangee[y+1],0);
-					if(verifBloc(&b,&p->l[x].rangee[y+1],0)==1)
+					erreur+=verifBloc(&b,&p->l[x].rangee[y+1],1);
+					if(verifBloc(&b,&p->l[x].rangee[y+1],1)==1)
 					{
 							b.cote[1]=1;
 							p->l[x].rangee[y+1].cote[3]=1;
 					}
-					erreur+=verifBloc(&b,&p->l[x+1].rangee[y],1);
-					if(verifBloc(&b,&p->l[x+1].rangee[y],1)==1)
+					erreur+=verifBloc(&b,&p->l[x+1].rangee[y],2);
+					if(verifBloc(&b,&p->l[x+1].rangee[y],2==1))
 					{
-							b.cote[0]=1;
-							p->l[x+1].rangee[y].cote[2]=1;
+							b.cote[2]=1;
+							p->l[x+1].rangee[y].cote[0]=1;
 					}
 					return erreur;
 			}
 			else
 			{
-				if(y==p->taille)
+				if(y==p->taille-1)
 				{
-					erreur+=verifBloc(&b,&p->l[x].rangee[y-1],2);
-					if(verifBloc(&b,&p->l[x].rangee[y-1],2)==1)
+					erreur+=verifBloc(&b,&p->l[x].rangee[y-1],3);
+					if(verifBloc(&b,&p->l[x].rangee[y-1],3)==1)
 					{
 							b.cote[3]=1;
 							p->l[x].rangee[y-1].cote[1]=1;
 					}
-					erreur+=verifBloc(&b,&p->l[x-1].rangee[y],3);
-					if(verifBloc(&b,&p->l[x-1].rangee[y],3)==1)
+					erreur+=verifBloc(&b,&p->l[x-1].rangee[y],0);
+					if(verifBloc(&b,&p->l[x-1].rangee[y],0)==1)
 					{
-							b.cote[2]=1;
-							p->l[x-1].rangee[y].cote[0]=1;
+							b.cote[0]=1;
+							p->l[x-1].rangee[y].cote[2]=1;
 					}
 					return erreur;
 
 				}
 				else
 				{
-					erreur+=verifBloc(&b,&p->l[x-1].rangee[y],3);
-					if(verifBloc(&b,&p->l[x-1].rangee[y],3)==1)
-					{
-							b.cote[2]=1;
-							p->l[x-1].rangee[y].cote[0]=1;
-					}
-					erreur+=verifBloc(&b,&p->l[x+1].rangee[y],1);
-					if(verifBloc(&b,&p->l[x+1].rangee[y],1)==1)
+					erreur+=verifBloc(&b,&p->l[x-1].rangee[y],0);
+					if(verifBloc(&b,&p->l[x-1].rangee[y],0)==1)
 					{
 							b.cote[0]=1;
-							p->l[x+1].rangee[y].cote[2]=1;
+							p->l[x-1].rangee[y].cote[2]=1;
 					}
-					erreur+=verifBloc(&b,&p->l[x].rangee[y-1],2);
-					if(verifBloc(&b,&p->l[x].rangee[y-1],2)==1)
+					erreur+=verifBloc(&b,&p->l[x].rangee[y+1],1);
+					if(verifBloc(&b,&p->l[x].rangee[y+1],1)==1)
+					{
+							b.cote[1]=1;
+							p->l[x].rangee[y+1].cote[3]=1;
+					}
+					erreur+=verifBloc(&b,&p->l[x].rangee[y-1],3);
+					if(verifBloc(&b,&p->l[x].rangee[y-1],3)==1)
 					{
 							b.cote[3]=1;
 							p->l[x].rangee[y-1].cote[1]=1;
@@ -358,33 +358,82 @@ int verifRound(plateau* p,int x,int y) //regarder les erreurs que le bloc en x,y
 		}
 	}
 		else
-
-		{
-			erreur+=verifBloc(&b,&p->l[x].rangee[y+1],0);
-			if(verifBloc(&b,&p->l[x].rangee[y+1],0)==1)
-			{
-					b.cote[1]=1;
-					p->l[x+1].rangee[y].cote[3]=1;
-			}
-			erreur+=verifBloc(&b,&p->l[x-1].rangee[y],3);
-			if(verifBloc(&b,&p->l[x-1].rangee[y],3)==1)
-			{
-					b.cote[2]=1;
-					p->l[x-1].rangee[y].cote[0]=1;
-			}
-			erreur+=verifBloc(&b,&p->l[x+1].rangee[y],1);
-			if(verifBloc(&b,&p->l[x+1].rangee[y],1)==1)
-			{
-					b.cote[0]=1;
-					p->l[x+1].rangee[y].cote[2]=1;
-			}
-			erreur+=verifBloc(&b,&p->l[x].rangee[y-1],2);
-			if(verifBloc(&b,&p->l[x].rangee[y-1],2)==1)
-			{
-					b.cote[3]=1;
-					p->l[x].rangee[y-1].cote[1]=1;
-			}
-			return erreur;
+		{printf("\n je suis là2");
+		    if(y==0)
+		    {
+		        erreur+=verifBloc(&b,&p->l[x].rangee[y+1],1);
+    			if(verifBloc(&b,&p->l[x].rangee[y+1],1)==1)
+    			{
+    					b.cote[1]=1;
+    					p->l[x].rangee[y+1].cote[3]=1;
+    			}
+    			erreur+=verifBloc(&b,&p->l[x-1].rangee[y],0);
+    			if(verifBloc(&b,&p->l[x-1].rangee[y],0)==1)
+    			{
+    					b.cote[0]=1;
+    					p->l[x-1].rangee[y].cote[2]=1;
+    			}
+    			erreur+=verifBloc(&b,&p->l[x+1].rangee[y],2);
+    			if(verifBloc(&b,&p->l[x+1].rangee[y],2)==1)
+    			{
+    					b.cote[2]=1;
+    					p->l[x+1].rangee[y].cote[0]=1;
+    			}
+    			return erreur;
+		    }
+		    else
+		    {
+    		    if(y==p->taille-1)
+    		    {
+    		        erreur+=verifBloc(&b,&p->l[x-1].rangee[y],0);
+        			if(verifBloc(&b,&p->l[x-1].rangee[y],0)==1)
+        			{
+        					b.cote[0]=1;
+        					p->l[x-1].rangee[y].cote[2]=1;
+        			}
+        			erreur+=verifBloc(&b,&p->l[x+1].rangee[y],2);
+        			if(verifBloc(&b,&p->l[x+1].rangee[y],2)==1)
+        			{
+        					b.cote[2]=1;
+        					p->l[x+1].rangee[y].cote[0]=1;
+        			}
+        			erreur+=verifBloc(&b,&p->l[x].rangee[y-1],3);
+        			if(verifBloc(&b,&p->l[x].rangee[y-1],3)==1)
+        			{
+        					b.cote[3]=1;
+        					p->l[x].rangee[y-1].cote[1]=1;
+        			}
+        			return erreur;
+    		    }
+    		    else
+    		    {
+        		    erreur+=verifBloc(&b,&p->l[x].rangee[y+1],1);
+        			if(verifBloc(&b,&p->l[x].rangee[y+1],1)==1)
+        			{
+        					b.cote[1]=1;
+        					p->l[x].rangee[y+1].cote[3]=1;
+        			}
+        			erreur+=verifBloc(&b,&p->l[x-1].rangee[y],0);
+        			if(verifBloc(&b,&p->l[x-1].rangee[y],0)==1)
+        			{
+        					b.cote[0]=1;
+        					p->l[x-1].rangee[y].cote[2]=1;
+        			}
+        			erreur+=verifBloc(&b,&p->l[x+1].rangee[y],2);
+        			if(verifBloc(&b,&p->l[x+1].rangee[y],2)==1)
+        			{
+        					b.cote[2]=1;
+        					p->l[x+1].rangee[y].cote[0]=1;
+        			}
+        			erreur+=verifBloc(&b,&p->l[x].rangee[y-1],3);
+        			if(verifBloc(&b,&p->l[x].rangee[y-1],3)==1)
+        			{
+        					b.cote[3]=1;
+        					p->l[x].rangee[y-1].cote[1]=1;
+        			}
+        			return erreur;
+    		    }
+		    }
 
 		}
 
@@ -766,6 +815,12 @@ int main()
 	plateau* p=(plateau*)malloc(sizeof(plateau));
 	initPlateau(p,4);
 	remplirPlateau(p);
+	dessin(p);
+	ordi(p);
+	dessin(p);
+
+
+
 	freeP(p);
 
 
