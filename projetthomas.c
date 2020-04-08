@@ -3,14 +3,20 @@
 #include <string.h>
 #include <time.h>
 
-typedef struct
+/**
+* Projet de Info4A -2020
+* Auteur : Thomas Eguienta & Azeddine Assaghir
+*/
+
+
+typedef struct   //structure qui représente un bloc avec ses 4 cotés et un tableau qui représente les erreurs qu'il a avec les blocs autour de lui
 {
 	char nord,est,ouest,sud;
-	int* cote; //NESW
+	int cote[4]; //NESW
 }bloc;
 
 
-typedef struct
+typedef struct //structure qui représente une ligne qui est composé de blocs
 {
 	int taille;
 	bloc* rangee;
@@ -18,21 +24,21 @@ typedef struct
 }ligne;
 
 
-typedef struct
+typedef struct //structure qui représente le plateau qui est composé de plusieurs lignes
 {
 	int taille;
 	ligne* l;
 
 }plateau;
 
-bloc* creerBloc(char n,char e,char s,char o)
+bloc* creerBloc(char n,char e,char s,char o) //méthode pour créer un bloc en spécifiant les lettes
 {
 		bloc* b=(bloc*)malloc(sizeof(bloc));
 		b->nord=n;
 		b->est=e;
 		b->ouest=o;
 		b->sud=s;
-		b->cote=(int*)calloc(4,sizeof(int));
+		//b->cote=(int*)calloc(4,sizeof(int));
 		return b;
 }
 
@@ -41,7 +47,7 @@ void freeB(bloc* b)
 	free(b->cote);
 	free(b);
 }
-
+//accesseur des coordonnés du blocs
 char getN(bloc* b)
 {
 	return b->nord;
@@ -125,7 +131,7 @@ int recupErreur(plateau* p,int ax,int ay,int bx,int by) //renvoie le coté probl
 	return tab;
 }*/
 
-int verifBloc(bloc* a,bloc* b,int cote)
+int verifBloc(bloc* a,bloc* b,int cote) //verifie si il y une erreur entre les deux blocs en fonction du coté donné
 {
 	int erreur=0;
 	if (cote==2)
@@ -162,7 +168,7 @@ int verifBloc(bloc* a,bloc* b,int cote)
 	return erreur;
 }
 
-int verifPlateau(plateau* p)
+int verifPlateau(plateau* p) //méthode qui vérifie le nombre d'erreur total dans le plateau
 {
 	int erreur=0;
 	for(int i=0;i<p->taille;i++)
@@ -210,7 +216,7 @@ int verifPlateau(plateau* p)
 	return erreur;
 }
 
-void affectBloc(plateau* p,bloc* b,int x,int y)
+void affectBloc(plateau* p,bloc* b,int x,int y) //méthode qui affecte au bloc en position x,y les paramètres du bloc b
 {
 	p->l[x].rangee[y]=*b;
 }
@@ -361,8 +367,6 @@ int verifRound(plateau* p,int x,int y) //regarder les erreurs que le bloc en x,y
 		{printf("\n je suis là2");
 		    if(y==0)
 		    {
-		        erreur+=verifBloc(&b,&p->l[x].rangee[y+1],1);
-    			if(verifBloc(&b,&p->l[x].rangee[y+1],1)==1)
     			{
     					b.cote[1]=1;
     					p->l[x].rangee[y+1].cote[3]=1;
@@ -440,7 +444,7 @@ int verifRound(plateau* p,int x,int y) //regarder les erreurs que le bloc en x,y
 	}
 
 	}
-void swapBloc(plateau* p,int ax,int ay,int bx,int by)
+void swapBloc(plateau* p,int ax,int ay,int bx,int by)//méthode qui permet d'échanger la position de deux blocs
 	{
 		bloc a =p->l[ax].rangee[ay];
 		bloc b = p->l[bx].rangee[by];
@@ -452,8 +456,8 @@ void swapBloc(plateau* p,int ax,int ay,int bx,int by)
 
 
 
-void cherchsub(plateau* p,int ax,int ay)
-{   //tu dois récuperer le coté problématique entre a et b et avec verifRound et trouver un bloc qui peut se mettre pour réparer ce problème
+void cherchsub(plateau* p,int ax,int ay) //méthode qui permet à l'IA de chercher un bloc pour remplacer ou faire pivoter un des blocs qui a une erreur avec le bloc en position ax,ay
+{
 	bloc a=p->l[ax].rangee[ay];
 	int x=verifRound(p,ax,ay);
 	int bx;
@@ -523,7 +527,7 @@ void cherchsub(plateau* p,int ax,int ay)
 
 
 
-void dessin(plateau* p)
+void dessin(plateau* p) //méthode qui dessine le plateau à l'écran et le nombre d'erreur présente dans le plateau
 {
     int r=p->taille;
     printf("   ");
@@ -561,19 +565,21 @@ void dessin(plateau* p)
         }
         printf("\n");
     }
-
-
-
+		printf("\n");
+		printf("\n");
+		int x=verifPlateau(p);
+		printf("Il y a %d fautes",x);
+		printf("\n");
 
 }
 
-void initLigne(ligne* l,int t)
+void initLigne(ligne* l,int t) //méthode qui initialise une ligne
 {
 	l->rangee=(bloc*)malloc(t*sizeof(bloc));
 	l->taille=t;
 }
 
-void initPlateau(plateau* p, int t)
+void initPlateau(plateau* p, int t) //méthode qui initialise le plateau
 {
 	p->l=(ligne*)malloc(t*sizeof(ligne));
 	p->taille=t;
@@ -593,7 +599,7 @@ void freeL(ligne* l)
 }
 
 
-
+// 4 méthodes qui permettent de récuperer les coordonnés que l'utilisateur peut entrer avec par exemple b2c4
 int LireDX(plateau* p,char* e)
 {
 
@@ -640,7 +646,7 @@ int LireFY(plateau* p,char* e)
 
 
 
-void setLigne(plateau* p,ligne l,int pos)
+void setLigne(plateau* p,ligne l,int pos) //méthode qui permet d'affecter une ligne au plateau
 {
 		p->l[pos]=l;
 }
@@ -652,7 +658,7 @@ void freeP(plateau* p)
 	free(p);
 }
 
-void rotaBloc(plateau* p,char* c)
+void rotaBloc(plateau* p,char* c) //méthode qui permet de faire pivoter un bloc a partir de sa position entrée par l'utilisateur comme b2
 {
 	int l=0;
 	int k=0;
@@ -674,7 +680,7 @@ void rotaBloc(plateau* p,char* c)
 	p->l[l].rangee[k]=*b2;
 }
 
-void remplirPlateau(plateau* p)
+void remplirPlateau(plateau* p) //méthode qui rempli les lignes du plateau avec des blocs
 {
 	plateau* sf=(plateau*)malloc(sizeof(plateau));
 	initPlateau(sf,p->taille);
@@ -696,29 +702,75 @@ void remplirPlateau(plateau* p)
 				}
 				else
 				{
-					int c1=rand()%4;char n='A'+c1;
-					int c2=rand()%4;char e='A'+c2;
-					int c3=rand()%4;char s='A'+c3;
-					bloc* b=creerBloc(n,e,s,getE(&sf->l[i].rangee[j-1]));
-					affectBloc(sf,b,i,j);
+					if(j==sf->l->taille-1)
+					{
+						int c1=rand()%4;char n='A'+c1;
+						int c3=rand()%4;char s='A'+c3;
+						bloc* b=creerBloc(n,getO(&sf->l[i].rangee[0]),s,getE(&sf->l[i].rangee[j-1]));
+						affectBloc(sf,b,i,j);
+					}
+					else
+					{
+						int c1=rand()%4;char n='A'+c1;
+						int c2=rand()%4;char e='A'+c2;
+						int c3=rand()%4;char s='A'+c3;
+						bloc* b=creerBloc(n,e,s,getE(&sf->l[i].rangee[j-1]));
+						affectBloc(sf,b,i,j);
+					}
 				}
 			}
 			else
 			{
-				if(j==0)
+				if(i==sf->taille-1)
 				{
-					int c2=rand()%4;char e='A'+c2;
-					int c3=rand()%4;char s='A'+c3;
-					int c4=rand()%4;char o='A'+c4;
-					bloc* b=creerBloc(getS(&sf->l[i-1].rangee[j]),e,s,o);
-					affectBloc(sf,b,i,j);
+					if(j==0)
+					{
+						int c2=rand()%4;char e='A'+c2;
+						int c4=rand()%4;char o='A'+c4;
+						bloc* b=creerBloc(getS(&sf->l[i-1].rangee[j]),e,getN(&sf->l[0].rangee[j]),o);
+						affectBloc(sf,b,i,j);
+					}
+					else
+					{
+						if(j==sf->l->taille)
+						{
+							bloc* b=creerBloc(getS(&sf->l[i-1].rangee[j]),getO(&sf->l[i].rangee[0]),getN(&sf->l[0].rangee[j]),getE(&sf->l[i].rangee[j-1]));
+							affectBloc(sf,b,i,j);
+						}
+						else
+						{
+							int c2=rand()%4;char e='A'+c2;
+							bloc* b=creerBloc(getS(&sf->l[i-1].rangee[j]),e,getN(&sf->l[0].rangee[j]),getE(&sf->l[i].rangee[j-1]));
+							affectBloc(sf,b,i,j);
+						}
+					}
 				}
 				else
 				{
-					int c2=rand()%4;char e='A'+c2;
-					int c3=rand()%4;char s='A'+c3;
-					bloc* b=creerBloc(getS(&sf->l[i-1].rangee[j]),e,s,getE(&sf->l[i].rangee[j-1]));
-					affectBloc(sf,b,i,j);
+					if(j==0)
+					{
+						int c2=rand()%4;char e='A'+c2;
+						int c3=rand()%4;char s='A'+c3;
+						int c4=rand()%4;char o='A'+c4;
+						bloc* b=creerBloc(getS(&sf->l[i-1].rangee[j]),e,s,o);
+						affectBloc(sf,b,i,j);
+					}
+					else
+					{
+						if(j==sf->l->taille-1)
+						{
+							int c3=rand()%4;char s='A'+c3;
+							bloc* b=creerBloc(getS(&sf->l[i-1].rangee[j]),getO(&sf->l[i].rangee[0]),s,getE(&sf->l[i].rangee[j-1]));
+							affectBloc(sf,b,i,j);
+						}
+						else
+						{
+							int c2=rand()%4;char e='A'+c2;
+							int c3=rand()%4;char s='A'+c3;
+							bloc* b=creerBloc(getS(&sf->l[i-1].rangee[j]),e,s,getE(&sf->l[i].rangee[j-1]));
+							affectBloc(sf,b,i,j);
+						}
+					}
 				}
 			}
 		}
@@ -764,14 +816,14 @@ void remplirPlateau(plateau* p)
 }
 
 
-void ordi(plateau* p)
+void ordi(plateau* p) //méthode qui correspond aux actions que fait l'IA
 {
 	while(verifPlateau(p)!=0)
 	{
 		int n;
 		int m;
 		do{
-
+			dessin(p);
 			n= verifPlateau(p);
 			for(int i=0;i<p->taille;i++)
 			{
@@ -807,19 +859,86 @@ void ordi(plateau* p)
 				}
 			}
 		}
+		dessin(p);
 	}
 }
+
+
+void joueur(plateau* p)// méthode qui correspond à un joueur utilisateur
+{
+	while(verifPlateau!=0)
+	{
+		dessin(p);
+		printf("Taper 1 pour échanger deux blocs ou 2 pour faire tourner en bloc");
+		int q=0;
+		scanf("%d\n",q);
+		if(q==1)
+		{
+			printf("Donner les deux blocs à échanger");
+			char* s;
+			scanf("%s\n",s);
+			int s1,s2,s3,s4;
+			s1=LireDX(p,s);
+			s2=LireDY(p,s);
+			s3=LireFX(p,s);
+			s4=LireFY(p,s);
+			swapBloc(p,s1,s2,s3,s4);
+		}
+		else
+		{
+			if(q==2)
+			{
+				printf("Donner le bloc à pivoter :");
+				char* s;
+				scanf("%s\n",s);
+				int s1,s2;
+				int x=4;
+				printf("Donner le nombre de quarts de tour a faire :");
+				scanf("%d\n",x);
+				s1=LireDX(p,s);
+				s2=LireDY(p,s);
+				for(int i=0;i<x;i++)
+				{
+					rotaBloc(p,s1,s2);
+				}
+			}
+			else
+			{
+				printf("Vous n'avez pas écrit 1 ou 2");
+			}
+
+		}
+		dessin(p);
+	}
+}
+
+
+
 
 int main()
 {
 	plateau* p=(plateau*)malloc(sizeof(plateau));
-	initPlateau(p,4);
+	printf(" Donner la taille du plateau entre 4 et 7 :" );
+	int z=4;
+	scanf("%d\n",z);
+	initPlateau(p,z);
 	remplirPlateau(p);
-	dessin(p);
-	ordi(p);
-	dessin(p);
+	printf("Taper 1 pour joueur, 2 pour IA \n");
+	int x=0;
+	scanf("%d\n",x);
+	if(x=1){
+		joueur(p);
+	}
+	else{
+		if(x=2)
+		{
+			ordi(p);
+		}
+		else{
+			printf("erreur");
+		}
 
-
+	}
 
 	freeP(p);
 
