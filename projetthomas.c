@@ -177,39 +177,28 @@ int verifPlateau(plateau* p) //méthode qui vérifie le nombre d'erreur total da
 		{
 			if(i==0)
 			{
+				erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[p->taille-1].rangee[j]),0);
 				if(!(j==p->l->taille-1))
 				{
-					erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i].rangee[j+1]),0);
+					erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i].rangee[j+1]),1);
+				}
+				else
+				{
+					erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i].rangee[0]),1);
 				}
 			}
 			else
 			{
-				if(i==p->taille-1)
+				if(!(j==p->l->taille-1))
 				{
-
-					if(!(j==p->l->taille-1))
-					{
-						erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i].rangee[j+1]),0);
-						erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i-1].rangee[j]),1);
-					}
-					else
-					{
-						erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i-1].rangee[j]),1);
-					}
+					erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i].rangee[j+1]),1);
+					erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i-1].rangee[j]),0);
 				}
 				else
 				{
-					if(!(j==p->l->taille-1))
-					{
-						erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i].rangee[j+1]),0);
-						erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i-1].rangee[j]),1);
-					}
-					else
-					{
-						erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i-1].rangee[j]),1);
-					}
+					erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i-1].rangee[j]),0);
+					erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i].rangee[0]),1);
 				}
-
 			}
 		}
 	}
@@ -233,7 +222,7 @@ void gener(plateau* p)//à suppr plus tard
 	}
 }
 
-int verifRound(plateau* p,int x,int y) //regarder les erreurs que le bloc en x,y a avec les blocs autour de lui et rempli le tableau cote du bloc qui correspond aux erreurs eventuelles
+int verifRound2(plateau* p,int x,int y) //regarder les erreurs que le bloc en x,y a avec les blocs autour de lui et rempli le tableau cote du bloc qui correspond aux erreurs eventuelles
 {
 	bloc b =p->l[x].rangee[y];
 	int erreur=0;
@@ -443,7 +432,36 @@ int verifRound(plateau* p,int x,int y) //regarder les erreurs que le bloc en x,y
 
 	}
 
+}
+
+int verifRound(plateau* p,int x,int y)//regarder les erreurs que le bloc en x,y a avec les blocs autour de lui et rempli le tableau cote du bloc qui correspond aux erreurs eventuelles
+{
+	bloc b=p->l[x].rangee[y];
+	int erreur=0;
+
+	if(x==0)
+	{
+		if(y==0)
+		{
+			if(verifBloc(&b,&p->l[0].rangee[p->taille-1]))
+			{
+				erreur++;
+				b.cote[3]=1;
+			}
+			else
+			{
+				b.cote[3]=0;
+			}
+
+		}
 	}
+
+
+
+
+
+}
+
 void swapBloc(plateau* p,int ax,int ay,int bx,int by)//méthode qui permet d'échanger la position de deux blocs
 	{
 		bloc a =p->l[ax].rangee[ay];
@@ -870,12 +888,12 @@ void joueur(plateau* p)// méthode qui correspond à un joueur utilisateur
 	{
 		dessin(p);
 		printf("Taper 1 pour échanger deux blocs ou 2 pour faire tourner en bloc");
-		int q=0;
-		scanf("%d\n",q);
+		int q;
+		scanf("%d\n",&q);
 		if(q==1)
 		{
 			printf("Donner les deux blocs à échanger");
-			char* s;
+			char* s[4];
 			scanf("%s\n",s);
 			int s1,s2,s3,s4;
 			s1=LireDX(p,s);
@@ -889,17 +907,15 @@ void joueur(plateau* p)// méthode qui correspond à un joueur utilisateur
 			if(q==2)
 			{
 				printf("Donner le bloc à pivoter :");
-				char* s;
+				char s[2];
 				scanf("%s\n",s);
 				int s1,s2;
-				int x=4;
+				int x;
 				printf("Donner le nombre de quarts de tour a faire :");
-				scanf("%d\n",x);
-				s1=LireDX(p,s);
-				s2=LireDY(p,s);
+				scanf("%d\n",&x);
 				for(int i=0;i<x;i++)
 				{
-					rotaBloc(p,s1,s2);
+					rotaBloc(p,s);
 				}
 			}
 			else
@@ -912,33 +928,45 @@ void joueur(plateau* p)// méthode qui correspond à un joueur utilisateur
 	}
 }
 
+void viderBuffer()
+{
+    int c = 0;
+    while (c != '\n' && c != EOF)
+    {
+        c = getchar();
+    }
+}
+
 
 
 
 int main()
 {
 	plateau* p=(plateau*)malloc(sizeof(plateau));
-	printf(" Donner la taille du plateau entre 4 et 7 :" );
-	int z=4;
-	scanf("%d\n",z);
+	printf(" Donner la taille du plateau entre 4 et 7 :\n" );
+	int z,x,c;
+	scanf("%d\n",&z);
+	viderBuffer();
+	printf("Vous avez choisi %d",z);
+	printf("\n");
 	initPlateau(p,z);
 	remplirPlateau(p);
 	printf("Taper 1 pour joueur, 2 pour IA \n");
-	int x=0;
-	scanf("%d\n",x);
-	if(x=1){
+	scanf("%d\n",&x);
+	printf("Vous avez choisi %d \n",x);
+	if(x==1){
 		joueur(p);
 	}
-	else{
-		if(x=2)
+	if(x==2)
 		{
 			ordi(p);
 		}
-		else{
-			printf("erreur");
-		}
-
+	if(x!=1 || x!=2)
+	{
+		printf("erreur");
 	}
+
+
 
 	freeP(p);
 
