@@ -44,7 +44,6 @@ bloc* creerBloc(char n,char e,char s,char o) //méthode pour créer un bloc en s
 
 void freeB(bloc* b)
 {
-	free(b->cote);
 	free(b);
 }
 //accesseur des coordonnés du blocs
@@ -87,22 +86,11 @@ void setS(bloc* b,char n)
 }
 
 
-int equalsBloc(plateau* p,bloc* a,int bx,int by,int i)
-{
-	bloc b=p->l[bx].rangee[by];
-	switch (i)
-	{
-	 	case 0:{ return getN(a)==getN(&b);break; }
-		case 1:{ return getE(a)==getE(&b);break; }
-		case 2:{ return getS(a)==getS(&b);break; }
-		case 3:{ return getO(a)==getO(&b);break; }
-		default :{printf("error");}
-	 }
-}
+
 
 int recupErreur(plateau* p,int ax,int ay,int bx,int by) //renvoie le coté problematique entre le bloc en ax,ay et bx,by
 {
-		if(ax=bx)
+		if(ax==bx)
 		{
 			if(ay>by){ return 2;}
 			else{
@@ -115,21 +103,9 @@ int recupErreur(plateau* p,int ax,int ay,int bx,int by) //renvoie le coté probl
 				if(ax>bx){ return 3;}
 			}
 		}
+		return -1
 }
 
-/*int* calculpb(plateau* p,int ax, int ay,int bx, int by) //rempli un tableau qui donne les points communs entre les deux blocs
-{
-	int tab[4]={0,0,0,0};
-	bloc a=p->l[ax].rangee[ay];
-	for(int i=0;i<4;i++)
-	{
-		if(equalsBloc(p,&a,bx,by,i)==1)
-		{
-			tab[i]=1;
-		}
-	}
-	return tab;
-}*/
 
 int verifBloc(bloc* a,bloc* b,int cote) //verifie si il y une erreur entre les deux blocs en fonction du coté donné
 {
@@ -202,7 +178,15 @@ int verifPlateau(plateau* p) //méthode qui vérifie le nombre d'erreur total da
 			}
 		}
 	}
-	return erreur;
+	if(erreur==0){
+		printf("Solution trouvée");
+		printf("\n");
+		return erreur;
+	}else
+	{
+		return erreur;
+	}
+
 }
 
 void affectBloc(plateau* p,bloc* b,int x,int y) //méthode qui affecte au bloc en position x,y les paramètres du bloc b
@@ -439,26 +423,136 @@ int verifRound(plateau* p,int x,int y)//regarder les erreurs que le bloc en x,y 
 	bloc b=p->l[x].rangee[y];
 	int erreur=0;
 
-	if(x==0)
-	{
-		if(y==0)
-		{
-			if(verifBloc(&b,&p->l[0].rangee[p->taille-1]))
-			{
-				erreur++;
-				b.cote[3]=1;
-			}
-			else
-			{
-				b.cote[3]=0;
-			}
 
+	if(y==0)
+	{
+		if(verifBloc(&b,&p->l[x].rangee[p->taille-1],3))
+		{
+			erreur++;
+			b.cote[3]=1;
+		}
+		else
+		{
+			b.cote[3]=0;
+		}
+		if(verifBloc(&b,&p->l[x].rangee[y+1],1))
+		{
+			erreur++;
+			b.cote[1]=1;
+		}
+		else
+		{
+			b.cote[1]=0;
+		}
+	 }
+	if(y==p->taille-1)
+	{
+		if(verifBloc(&b,&p->l[x].rangee[0],1))
+		{
+			erreur++;
+			b.cote[1]=1;
+		}
+		else
+		{
+			b.cote[1]=0;
+		}
+		if(verifBloc(&b,&p->l[x].rangee[y-1],1))
+		{
+			erreur++;
+			b.cote[3]=1;
+		}
+		else
+		{
+			b.cote[3]=0;
+		}
+	}
+	if(y!=0 && y!=p->taille-1)
+	{
+		if(verifBloc(&b,&p->l[x].rangee[y+1],0))
+		{
+			erreur++;
+			b.cote[0]=1;
+		}
+		else
+		{
+			b.cote[0]=0;
+		}
+		if(verifBloc(&b,&p->l[x].rangee[y-1],3))
+		{
+			erreur++;
+			b.cote[3]=1;
+		}
+		else
+		{
+			b.cote[3]=0;
 		}
 	}
 
+	if(x==0)
+	{
+		if(verifBloc(&b,&p->l[p->taille-1].rangee[y],0))
+		{
+			erreur++;
+			b.cote[0]=1;
+		}
+		else
+		{
+			b.cote[0]=0;
+		}
+		if(verifBloc(&b,&p->l[x+1].rangee[y],2))
+		{
+			erreur++;
+			b.cote[2]=1;
+		}
+		else
+		{
+			b.cote[2]=0;
+		}
+	 }
+ 	if(x==p->taille-1)
+	{
+		if(verifBloc(&b,&p->l[x-1].rangee[y],0))
+	 	{
+	 		erreur++;
+	 		b.cote[0]=1;
+		}
+	 	else
+	 	{
+	 		b.cote[0]=0;
+	 	}
+	 	if(verifBloc(&b,&p->l[0].rangee[y],2))
+	 	{
+	 		erreur++;
+	 		b.cote[2]=1;
+	 	}
+	 	else
+	 	{
+	 		b.cote[2]=0;
+	 	}
+	}
+ 	if(x!=0 && x!=p->taille-1)
+	{
+		if(verifBloc(&b,&p->l[x-1].rangee[y],0))
+	 	{
+	 		erreur++;
+	 		b.cote[0]=1;
+	 	}
+	 	else
+	 	{
+	 		b.cote[0]=0;
+	 	}
+	 	if(verifBloc(&b,&p->l[x+1].rangee[y],2))
+	 	{
+	 		erreur++;
+	 		b.cote[2]=1;
+	 	}
+	 	else
+	 	{
+	 		b.cote[2]=0;
+	 	}
+	}
 
-
-
+	return erreur;
 
 }
 
@@ -750,7 +844,7 @@ void remplirPlateau(plateau* p) //méthode qui rempli les lignes du plateau avec
 					}
 					else
 					{
-						if(j==sf->l->taille)
+						if(j==sf->l->taille-1)
 						{
 							bloc* b=creerBloc(getS(&sf->l[i-1].rangee[j]),getO(&sf->l[i].rangee[0]),getN(&sf->l[0].rangee[j]),getE(&sf->l[i].rangee[j-1]));
 							affectBloc(sf,b,i,j);
@@ -793,6 +887,9 @@ void remplirPlateau(plateau* p) //méthode qui rempli les lignes du plateau avec
 			}
 		}
 	}
+
+	dessin(sf);
+	printf("regarde bouffon c'est la solution fixe");
 
 	for(int i=0;i<sf->taille;i++)
 	{
@@ -884,23 +981,32 @@ void ordi(plateau* p) //méthode qui correspond aux actions que fait l'IA
 
 void joueur(plateau* p)// méthode qui correspond à un joueur utilisateur
 {
-	while(verifPlateau!=0)
+	while(verifPlateau(p)!=0)
 	{
 		dessin(p);
-		printf("Taper 1 pour échanger deux blocs ou 2 pour faire tourner en bloc");
+		printf("Taper 1 pour échanger deux blocs ou 2 pour faire tourner en bloc : ");
 		int q;
-		scanf("%d\n",&q);
+		scanf("%d",&q);
+		printf("\n");
 		if(q==1)
 		{
-			printf("Donner les deux blocs à échanger");
-			char* s[4];
-			scanf("%s\n",s);
-			int s1,s2,s3,s4;
-			s1=LireDX(p,s);
-			s2=LireDY(p,s);
-			s3=LireFX(p,s);
-			s4=LireFY(p,s);
-			swapBloc(p,s1,s2,s3,s4);
+			printf("Donner les deux blocs à échanger :");
+			char s[4];
+			scanf("%s",s);
+			printf("\n");
+			if(strlen(s)==4){
+				int s1,s2,s3,s4;
+				s1=LireDX(p,s);
+				s2=LireDY(p,s);
+				s3=LireFX(p,s);
+				s4=LireFY(p,s);
+				swapBloc(p,s1,s2,s3,s4);
+			}
+			else{
+				printf("erreur");
+				printf("\n");
+			}
+
 		}
 		else
 		{
@@ -908,11 +1014,12 @@ void joueur(plateau* p)// méthode qui correspond à un joueur utilisateur
 			{
 				printf("Donner le bloc à pivoter :");
 				char s[2];
-				scanf("%s\n",s);
-				int s1,s2;
+				scanf("%s",s);
+				printf("\n");
 				int x;
 				printf("Donner le nombre de quarts de tour a faire :");
-				scanf("%d\n",&x);
+				scanf("%d",&x);
+				printf("\n");
 				for(int i=0;i<x;i++)
 				{
 					rotaBloc(p,s);
@@ -921,21 +1028,13 @@ void joueur(plateau* p)// méthode qui correspond à un joueur utilisateur
 			else
 			{
 				printf("Vous n'avez pas écrit 1 ou 2");
+				printf("\n");
 			}
 
 		}
-		dessin(p);
 	}
 }
 
-void viderBuffer()
-{
-    int c = 0;
-    while (c != '\n' && c != EOF)
-    {
-        c = getchar();
-    }
-}
 
 
 
@@ -943,17 +1042,20 @@ void viderBuffer()
 int main()
 {
 	plateau* p=(plateau*)malloc(sizeof(plateau));
-	printf(" Donner la taille du plateau entre 4 et 7 :\n" );
+	printf(" Donner la dimension du plateau entre 4 et 7 :\n" );
 	int z,x,c;
-	scanf("%d\n",&z);
-	viderBuffer();
-	printf("Vous avez choisi %d",z);
+	scanf("%d",&z);
+	printf("\n");
+	if(z>=4 && z<=7){
 	printf("\n");
 	initPlateau(p,z);
 	remplirPlateau(p);
+
+
+
 	printf("Taper 1 pour joueur, 2 pour IA \n");
-	scanf("%d\n",&x);
-	printf("Vous avez choisi %d \n",x);
+	scanf("%d",&x);
+	printf("\n");
 	if(x==1){
 		joueur(p);
 	}
@@ -965,7 +1067,10 @@ int main()
 	{
 		printf("erreur");
 	}
-
+}
+else{
+	printf("Partie terminée");
+}
 
 
 	freeP(p);
