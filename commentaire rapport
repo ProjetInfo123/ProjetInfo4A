@@ -24,4 +24,3 @@ Si le joueur rentre 2, le programme lui demande de choisir un bloc a échanger s
 Ce programme s'arrête lorsque l'utilisateur parvient à retrouver le dessin avec 0 faute.
 
 ordi est une méthode qui représente l'IA. Le but d'ordi est de résoudre le plateau pour qu'il n'y ait que 0 faute. Pour ce faire, le programme dans un premier lieu cherche à résoudre la première erreur qu'il rencontre, pour la résoudre, il parcourt le plateau à la recherche d'un bloc qui pourrait enlever cette erreur et dans le meilleur des cas ne pas creer de nouvelle erreur. Si il le trouve, on échange ces deux blocs et on regarde le nombre de fautes dans le plateau. Si le nombre de fautes ne change pas, on opte plutot pour pivoter le bloc qu'on voulait échanger au départ. On repart ensuite sur des swap. On répète cette méthode jusqu'a qu'il n'y a plus d'erreur dans le plateau.
-
