@@ -38,14 +38,11 @@ bloc* creerBloc(char n,char e,char s,char o) //méthode pour créer un bloc en s
 		b->est=e;
 		b->ouest=o;
 		b->sud=s;
-		//b->cote=(int*)calloc(4,sizeof(int));
+
 		return b;
 }
 
-void freeB(bloc* b)
-{
-	free(b);
-}
+
 //accesseur des coordonnés du blocs
 char getN(bloc* b)
 {
@@ -67,26 +64,6 @@ char getS(bloc* b)
 	return b->sud;
 }
 
-void setN(bloc* b,char n)
-{
-		b->nord=n;
-}
-
-void setE(bloc* b,char n)
-{
-		b->est=n;
-}
-void setO(bloc* b,char n)
-{
-		b->ouest=n;
-}
-void setS(bloc* b,char n)
-{
-		b->sud=n;
-}
-
-
-
 
 int recupErreur(plateau* p,int ax,int ay,int bx,int by) //renvoie le coté problematique entre le bloc en ax,ay et bx,by
 {
@@ -103,7 +80,7 @@ int recupErreur(plateau* p,int ax,int ay,int bx,int by) //renvoie le coté probl
 				if(ax>bx){ return 3;}
 			}
 		}
-		return -1
+		return -1;
 }
 
 
@@ -179,14 +156,10 @@ int verifPlateau(plateau* p) //méthode qui vérifie le nombre d'erreur total da
 		}
 	}
 	if(erreur==0){
-		printf("Solution trouvée");
-		printf("\n");
-		return erreur;
-	}else
-	{
-		return erreur;
+		printf("Solution trouvée\n");
 	}
 
+	return erreur;
 }
 
 void affectBloc(plateau* p,bloc* b,int x,int y) //méthode qui affecte au bloc en position x,y les paramètres du bloc b
@@ -194,229 +167,6 @@ void affectBloc(plateau* p,bloc* b,int x,int y) //méthode qui affecte au bloc e
 	p->l[x].rangee[y]=*b;
 }
 
-void gener(plateau* p)//à suppr plus tard
-{
-	for(int i=0;i<p->taille;i++)
-	{
-		for(int j=0;j<p->l->taille;j++)
-		{
-			bloc* b=creerBloc('A','B','C','D');
-			affectBloc(p,b,i,j);
-		}
-	}
-}
-
-int verifRound2(plateau* p,int x,int y) //regarder les erreurs que le bloc en x,y a avec les blocs autour de lui et rempli le tableau cote du bloc qui correspond aux erreurs eventuelles
-{
-	bloc b =p->l[x].rangee[y];
-	int erreur=0;
-	if(x==0)
-	{printf("\n je suis là");
-		if(y==0)
-		{
-			erreur+=verifBloc(&b,&p->l[x].rangee[y+1],1);
-			if(verifBloc(&b,&p->l[x].rangee[y+1],1)==1)
-			{
-					b.cote[1]=1;
-					p->l[x].rangee[y+1].cote[3]=1;
-			}
-			erreur+=verifBloc(&b,&p->l[x+1].rangee[y],2);
-			if(verifBloc(&b,&p->l[x+1].rangee[y],2)==1)
-			{
-					b.cote[2]=1;
-					p->l[x+1].rangee[y].cote[0]=1;
-			}
-				return erreur;
-		}
-		else
-		{
-			if(y==p->taille-1)
-			{
-				erreur+=verifBloc(&b,&p->l[x].rangee[y-1],3);
-				if(verifBloc(&b,&p->l[x].rangee[y-1],3)==1)
-				{
-						b.cote[3]=1;
-						p->l[x].rangee[y-1].cote[1]=1;
-				}
-				erreur+=verifBloc(&b,&p->l[x+1].rangee[y],2);
-				if(verifBloc(&b,&p->l[x+1].rangee[y],2)==1)
-				{
-						b.cote[2]=1;
-						p->l[x+1].rangee[y].cote[0]=1;
-				}
-				return erreur;
-
-			}
-			else
-			{
-				erreur+=verifBloc(&b,&p->l[x+1].rangee[y],2);
-				if(verifBloc(&b,&p->l[x+1].rangee[y],2)==1)
-				{
-						b.cote[2]=1;
-						p->l[x+1].rangee[y].cote[0]=1;
-				}
-				erreur+=verifBloc(&b,&p->l[x].rangee[y+1],1);
-				if(verifBloc(&b,&p->l[x].rangee[y+1],1)==1)
-				{
-						b.cote[1]=1;
-						p->l[x].rangee[y+1].cote[3]=1;
-				}
-
-				erreur+=verifBloc(&b,&p->l[x].rangee[y-1],3);
-				if(verifBloc(&b,&p->l[x].rangee[y-1],3)==1)
-				{
-						b.cote[3]=1;
-						p->l[x].rangee[y-1].cote[1]=1;
-				}
-				return erreur;
-			}
-
-		}
-	}
-	else
-	{
-		if(x==p->taille-1)
-		{printf("\n je suis là3");
-			if(y==0)
-			{
-					erreur+=verifBloc(&b,&p->l[x].rangee[y+1],1);
-					if(verifBloc(&b,&p->l[x].rangee[y+1],1)==1)
-					{
-							b.cote[1]=1;
-							p->l[x].rangee[y+1].cote[3]=1;
-					}
-					erreur+=verifBloc(&b,&p->l[x+1].rangee[y],2);
-					if(verifBloc(&b,&p->l[x+1].rangee[y],2==1))
-					{
-							b.cote[2]=1;
-							p->l[x+1].rangee[y].cote[0]=1;
-					}
-					return erreur;
-			}
-			else
-			{
-				if(y==p->taille-1)
-				{
-					erreur+=verifBloc(&b,&p->l[x].rangee[y-1],3);
-					if(verifBloc(&b,&p->l[x].rangee[y-1],3)==1)
-					{
-							b.cote[3]=1;
-							p->l[x].rangee[y-1].cote[1]=1;
-					}
-					erreur+=verifBloc(&b,&p->l[x-1].rangee[y],0);
-					if(verifBloc(&b,&p->l[x-1].rangee[y],0)==1)
-					{
-							b.cote[0]=1;
-							p->l[x-1].rangee[y].cote[2]=1;
-					}
-					return erreur;
-
-				}
-				else
-				{
-					erreur+=verifBloc(&b,&p->l[x-1].rangee[y],0);
-					if(verifBloc(&b,&p->l[x-1].rangee[y],0)==1)
-					{
-							b.cote[0]=1;
-							p->l[x-1].rangee[y].cote[2]=1;
-					}
-					erreur+=verifBloc(&b,&p->l[x].rangee[y+1],1);
-					if(verifBloc(&b,&p->l[x].rangee[y+1],1)==1)
-					{
-							b.cote[1]=1;
-							p->l[x].rangee[y+1].cote[3]=1;
-					}
-					erreur+=verifBloc(&b,&p->l[x].rangee[y-1],3);
-					if(verifBloc(&b,&p->l[x].rangee[y-1],3)==1)
-					{
-							b.cote[3]=1;
-							p->l[x].rangee[y-1].cote[1]=1;
-					}
-					return erreur;
-				}
-		}
-	}
-		else
-		{printf("\n je suis là2");
-		    if(y==0)
-		    {
-    			{
-    					b.cote[1]=1;
-    					p->l[x].rangee[y+1].cote[3]=1;
-    			}
-    			erreur+=verifBloc(&b,&p->l[x-1].rangee[y],0);
-    			if(verifBloc(&b,&p->l[x-1].rangee[y],0)==1)
-    			{
-    					b.cote[0]=1;
-    					p->l[x-1].rangee[y].cote[2]=1;
-    			}
-    			erreur+=verifBloc(&b,&p->l[x+1].rangee[y],2);
-    			if(verifBloc(&b,&p->l[x+1].rangee[y],2)==1)
-    			{
-    					b.cote[2]=1;
-    					p->l[x+1].rangee[y].cote[0]=1;
-    			}
-    			return erreur;
-		    }
-		    else
-		    {
-    		    if(y==p->taille-1)
-    		    {
-    		        erreur+=verifBloc(&b,&p->l[x-1].rangee[y],0);
-        			if(verifBloc(&b,&p->l[x-1].rangee[y],0)==1)
-        			{
-        					b.cote[0]=1;
-        					p->l[x-1].rangee[y].cote[2]=1;
-        			}
-        			erreur+=verifBloc(&b,&p->l[x+1].rangee[y],2);
-        			if(verifBloc(&b,&p->l[x+1].rangee[y],2)==1)
-        			{
-        					b.cote[2]=1;
-        					p->l[x+1].rangee[y].cote[0]=1;
-        			}
-        			erreur+=verifBloc(&b,&p->l[x].rangee[y-1],3);
-        			if(verifBloc(&b,&p->l[x].rangee[y-1],3)==1)
-        			{
-        					b.cote[3]=1;
-        					p->l[x].rangee[y-1].cote[1]=1;
-        			}
-        			return erreur;
-    		    }
-    		    else
-    		    {
-        		    erreur+=verifBloc(&b,&p->l[x].rangee[y+1],1);
-        			if(verifBloc(&b,&p->l[x].rangee[y+1],1)==1)
-        			{
-        					b.cote[1]=1;
-        					p->l[x].rangee[y+1].cote[3]=1;
-        			}
-        			erreur+=verifBloc(&b,&p->l[x-1].rangee[y],0);
-        			if(verifBloc(&b,&p->l[x-1].rangee[y],0)==1)
-        			{
-        					b.cote[0]=1;
-        					p->l[x-1].rangee[y].cote[2]=1;
-        			}
-        			erreur+=verifBloc(&b,&p->l[x+1].rangee[y],2);
-        			if(verifBloc(&b,&p->l[x+1].rangee[y],2)==1)
-        			{
-        					b.cote[2]=1;
-        					p->l[x+1].rangee[y].cote[0]=1;
-        			}
-        			erreur+=verifBloc(&b,&p->l[x].rangee[y-1],3);
-        			if(verifBloc(&b,&p->l[x].rangee[y-1],3)==1)
-        			{
-        					b.cote[3]=1;
-        					p->l[x].rangee[y-1].cote[1]=1;
-        			}
-        			return erreur;
-    		    }
-		    }
-
-		}
-
-	}
-
-}
 
 int verifRound(plateau* p,int x,int y)//regarder les erreurs que le bloc en x,y a avec les blocs autour de lui et rempli le tableau cote du bloc qui correspond aux erreurs eventuelles
 {
@@ -680,8 +430,7 @@ void dessin(plateau* p) //méthode qui dessine le plateau à l'écran et le nomb
 		printf("\n");
 		printf("\n");
 		int x=verifPlateau(p);
-		printf("Il y a %d fautes",x);
-		printf("\n");
+		printf("Il y a %d fautes\n",x);
 
 }
 
@@ -701,13 +450,27 @@ void initPlateau(plateau* p, int t) //méthode qui initialise le plateau
 	}
 }
 
-
-
+void freeB(bloc* b)
+{
+	free(b);
+}
 
 void freeL(ligne* l)
 {
-	free(l->rangee);
+	for(int i=0;i<l->taille;i++)
+	{
+		freeB(&l->rangee[i]);
+	}
 	free(l);
+}
+
+void freeP(plateau* p)
+{
+	for(int i=0;i<p->taille;i++)
+	{
+		freeL(&p->l[i]);
+	}
+	free(p);
 }
 
 
@@ -757,19 +520,6 @@ int LireFY(plateau* p,char* e)
 }
 
 
-
-void setLigne(plateau* p,ligne l,int pos) //méthode qui permet d'affecter une ligne au plateau
-{
-		p->l[pos]=l;
-}
-
-
-void freeP(plateau* p)
-{
-	free(p->l);
-	free(p);
-}
-
 void rotaBloc(plateau* p,char* c) //méthode qui permet de faire pivoter un bloc a partir de sa position entrée par l'utilisateur comme b2
 {
 	int l=0;
@@ -789,7 +539,7 @@ void rotaBloc(plateau* p,char* c) //méthode qui permet de faire pivoter un bloc
 	char s=getS(&b);
 	char o=getO(&b);
 	bloc* b2=creerBloc(o,n,e,s);
-	p->l[l].rangee[k]=*b2;
+	affectBloc(p,b2,l,k);
 }
 
 void remplirPlateau(plateau* p) //méthode qui rempli les lignes du plateau avec des blocs
@@ -888,9 +638,6 @@ void remplirPlateau(plateau* p) //méthode qui rempli les lignes du plateau avec
 		}
 	}
 
-	dessin(sf);
-	printf("regarde bouffon c'est la solution fixe");
-
 	for(int i=0;i<sf->taille;i++)
 	{
 		for(int j=0;j<sf->l->taille;j++)
@@ -981,8 +728,10 @@ void ordi(plateau* p) //méthode qui correspond aux actions que fait l'IA
 
 void joueur(plateau* p)// méthode qui correspond à un joueur utilisateur
 {
+	int nbechange=0;
 	while(verifPlateau(p)!=0)
 	{
+		nbechange++;
 		dessin(p);
 		printf("Taper 1 pour échanger deux blocs ou 2 pour faire tourner en bloc : ");
 		int q;
@@ -1027,12 +776,13 @@ void joueur(plateau* p)// méthode qui correspond à un joueur utilisateur
 			}
 			else
 			{
-				printf("Vous n'avez pas écrit 1 ou 2");
-				printf("\n");
+				printf("Vous n'avez pas écrit 1 ou 2\n");
 			}
 
 		}
 	}
+	dessin(p);
+	printf("La partie a été résolue en %d échanges",nbechange);
 }
 
 
@@ -1058,6 +808,7 @@ int main()
 	printf("\n");
 	if(x==1){
 		joueur(p);
+		printf("Partie terminée");
 	}
 	if(x==2)
 		{
@@ -1069,7 +820,7 @@ int main()
 	}
 }
 else{
-	printf("Partie terminée");
+	printf("Dimension incorrecte");
 }
 
 
