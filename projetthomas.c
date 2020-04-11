@@ -465,7 +465,7 @@ void freeL(ligne* l)
 }
 
 void freeP(plateau* p)
-{
+{//l'erreur vient p-e du fait que y a pas de taille dans les struct de base pour l et rangee
 	for(int i=0;i<p->taille;i++)
 	{
 		freeL(&p->l[i]);
