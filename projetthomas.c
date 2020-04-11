@@ -84,7 +84,7 @@ int recupErreur(plateau* p,int ax,int ay,int bx,int by) //renvoie le coté probl
 }
 
 
-int verifBloc(bloc* a,bloc* b,int cote) //verifie si il y une erreur entre les deux blocs en fonction du coté donné
+int verifBloc(bloc* a,bloc* b,int cote) //verifie si il y une erreur entre les deux blocs en fonction du coté donné, renvoie 1 si il y a une erreur et 0 sinon
 {
 	int erreur=0;
 	if (cote==2)
@@ -121,7 +121,7 @@ int verifBloc(bloc* a,bloc* b,int cote) //verifie si il y une erreur entre les d
 	return erreur;
 }
 
-int verifPlateau(plateau* p) //méthode qui vérifie le nombre d'erreur total dans le plateau
+int verifPlateau(plateau* p) //méthode qui renvoie le nombre d'erreur total dans le plateau
 {
 	int erreur=0;
 	for(int i=0;i<p->taille;i++)
@@ -168,7 +168,7 @@ void affectBloc(plateau* p,bloc* b,int x,int y) //méthode qui affecte au bloc e
 }
 
 
-int verifRound(plateau* p,int x,int y)//regarder les erreurs que le bloc en x,y a avec les blocs autour de lui et rempli le tableau cote du bloc qui correspond aux erreurs eventuelles
+int verifRound(plateau* p,int x,int y)//renvoie le nombre d'erreurs que le bloc en x,y a avec les blocs autour de lui (max 4) et rempli le tableau cote du bloc qui correspond aux erreurs éventuelles
 {
 	bloc b=p->l[x].rangee[y];
 	int erreur=0;
