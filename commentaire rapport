@@ -4,23 +4,89 @@ expliquer joueur et IA.
 
 expliquer les problemes qu'on a pu avoir
 --> IA qui ne resout pas vraiment
---> swapBloc a ete long a faire
+--> swapBloc a été long a faire
 --> verifRound aussi
 
 
 
-Un bloc est composé des attributs nord,est,ouest et sud qui correspondent aux lettres qui compose le bloc
-On a ajouté l'attribut coté qui est un tableau de taille 4 qui représente les interactions avec les blocs aux alentours du bloc dans le plateau.
-L'ordre du tableau est NESO. Si il y a un 1 dans la case N, cela signifie que le bloc n'a pas la meme lettre au nord que le bloc au dessus de lui a au sud.
+Un bloc est composé des attributs nord,est,ouest et sud qui correspondent aux lettres qui composent le bloc
+On a ajouté l'attribut cote qui est un tableau de taille 4 qui représente les interactions avec les blocs aux alentours du bloc dans le plateau.
+L'ordre du tableau est NESO. Si il y a un 1 dans la case N, cela signifie que le bloc n'a pas la même lettre au nord que le bloc au dessus de lui a au sud.
 
 
 
-remplirPlateau est une méthode qui remplis le tableau avec des blocs dont les différentes lettres sont aléatoires mais de telle sorte que le plateau puisse être réalisable.
+remplirPlateau est une méthode qui remplit le tableau avec des blocs dont les différentes lettres sont aléatoires mais de telle sorte que le plateau puisse être réalisable.
 
 
-joueur est une méthode qui représente l'utilisateur qui tente de résoudre le puzzle. L'utilisateur voit le dessin et connait le nombre d'erreur a résoudre. Il a de façon de faire pour résoudre ces erreurs, échanger deux blocs en appuyant sur 1 ou pivoter un bloc en appuyant sur 2. Si l'utilisateur appuie sur autre chose que 1 ou 2, le programme ne fait rien, indique que l'utilisateur s'est trompé et redemande de donner 1 ou 2.
+joueur est une méthode qui représente l'utilisateur qui tente de résoudre le puzzle. L'utilisateur voit le dessin et voit le nombre d'erreur a résoudre. Il a deux façon de faire pour résoudre ces erreurs, échanger deux blocs en appuyant sur 1 ou pivoter un bloc en appuyant sur 2. Si l'utilisateur appuie sur autre chose que 1 ou 2, le programme ne fait rien, indique à l'utilisateur qu'il s'est trompé et redemande de donner 1 ou 2.
 Si le joueur rentre 1, le programme lui demande de choisir les blocs à échanger sous la forme a1a2 tq a1 est le premier bloc et a2 le deuxième, si l'utilisateur ne fait pas ça, erreur. Si il le fait les deux blocs sont échangés de place puis on revient a l'étape du début.
 Si le joueur rentre 2, le programme lui demande de choisir un bloc a échanger sous la forme a1 comme pour échanger, erreur si ce n'est pas bon, sinon ça demande à l'utilisateur combien de quart de tours sur la droite à faire, sachant que 4 revient a ne rien changer.
 Ce programme s'arrête lorsque l'utilisateur parvient à retrouver le dessin avec 0 faute.
 
 ordi est une méthode qui représente l'IA. Le but d'ordi est de résoudre le plateau pour qu'il n'y ait que 0 faute. Pour ce faire, le programme dans un premier lieu cherche à résoudre la première erreur qu'il rencontre, pour la résoudre, il parcourt le plateau à la recherche d'un bloc qui pourrait enlever cette erreur et dans le meilleur des cas ne pas creer de nouvelle erreur. Si il le trouve, on échange ces deux blocs et on regarde le nombre de fautes dans le plateau. Si le nombre de fautes ne change pas, on opte plutot pour pivoter le bloc qu'on voulait échanger au départ. On repart ensuite sur des swap. On répète cette méthode jusqu'a qu'il n'y a plus d'erreur dans le plateau.
+
+
+
+void joueur(plateau* p)// méthode qui correspond à un joueur utilisateur
+{
+	int nbechange=0;
+	while(verifPlateau(p)!=0)
+	{
+		nbechange++;
+		dessin(p);
+		printf("Taper 1 pour échanger deux blocs ou 2 pour faire tourner en bloc : ");
+		int q;
+		scanf("%d",&q);
+		printf("\n");
+		if(q==1)
+		{
+			printf("Donner les deux blocs à échanger : ");
+			char s[4];
+			scanf("%s",s);
+			printf("\n");
+			if(strlen(s)==4 && s[0]=>'a' && s[0]<='a'+p->taille-1 && s[2]=>'a' && s[2]<='a'+p->taille-1 && s[1]>=1 && s[1]<=p->taille && s[3]>=1 && s[3]<=p->taille ){
+				int s1,s2,s3,s4;
+				s1=LireDX(p,s);
+				s2=LireDY(p,s);
+				s3=LireFX(p,s);
+				s4=LireFY(p,s);
+				swapBloc(p,s1,s2,s3,s4);
+			}
+			else{
+				printf("erreur\n");
+			}
+
+		}
+		else
+		{
+			if(q==2)
+			{
+				printf("Donner le bloc à pivoter : ");
+				char s[2];
+				scanf("%s",s);
+				printf("\n");
+				int x;
+				printf("Donner le nombre de quarts de tour a faire :");
+				scanf("%d",&x);
+				printf("\n");
+				if(strlen(x)==2 && s[0]=>'a' && s[0]<='a'+p->taille-1 && s[1]>=1 && s[1]<=p->taille){
+					for(int i=0;i<x;i++)
+					{
+						rotaBloc(p,s);
+					}
+				}
+				else{
+					printf(" erreur \n");
+				}
+
+			}
+			else
+			{
+				printf("Vous n'avez pas écrit 1 ou 2\n");
+			}
+
+		}
+	}
+	dessin(p);
+	printf("La partie a été résolue en %d échanges\n",nbechange);
+}

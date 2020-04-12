@@ -19,16 +19,14 @@ typedef struct   //structure qui représente un bloc avec ses 4 cotés et un tab
 typedef struct //structure qui représente une ligne qui est composé de blocs
 {
 	int taille;
-	bloc* rangee;
-
+	bloc** rangee;
 }ligne;
 
 
 typedef struct //structure qui représente le plateau qui est composé de plusieurs lignes
 {
 	int taille;
-	ligne* l;
-
+	ligne** l;
 }plateau;
 
 bloc* creerBloc(char n,char e,char s,char o) //méthode pour créer un bloc en spécifiant les lettes
@@ -126,36 +124,37 @@ int verifPlateau(plateau* p) //méthode qui renvoie le nombre d'erreur total dan
 	int erreur=0;
 	for(int i=0;i<p->taille;i++)
 	{
-		for(int j=0;j<p->l->taille;j++)
+		for(int j=0;j<p->taille;j++)
 		{
 			if(i==0)
 			{
-				erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[p->taille-1].rangee[j]),0);
-				if(!(j==p->l->taille-1))
+				erreur+=verifBloc(p->l[i]->rangee[j],p->l[p->taille-1]->rangee[j],0);
+				if(!(j==p->taille-1))
 				{
-					erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i].rangee[j+1]),1);
+					erreur+=verifBloc(p->l[i]->rangee[j],p->l[i]->rangee[j+1],1);
 				}
 				else
 				{
-					erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i].rangee[0]),1);
+					erreur+=verifBloc(p->l[i]->rangee[j],p->l[i]->rangee[0],1);
 				}
 			}
 			else
 			{
-				if(!(j==p->l->taille-1))
+				if(!(j==p->taille-1))
 				{
-					erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i].rangee[j+1]),1);
-					erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i-1].rangee[j]),0);
+					erreur+=verifBloc(p->l[i]->rangee[j],p->l[i]->rangee[j+1],1);
+					erreur+=verifBloc(p->l[i]->rangee[j],p->l[i-1]->rangee[j],0);
 				}
 				else
 				{
-					erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i-1].rangee[j]),0);
-					erreur+=verifBloc(&(p->l[i].rangee[j]),&(p->l[i].rangee[0]),1);
+					erreur+=verifBloc(p->l[i]->rangee[j],p->l[i-1]->rangee[j],0);
+					erreur+=verifBloc(p->l[i]->rangee[j],p->l[i]->rangee[0],1);
 				}
 			}
 		}
 	}
-	if(erreur==0){
+	if(erreur==0)
+  {
 		printf("Solution trouvée\n");
 	}
 
@@ -164,141 +163,141 @@ int verifPlateau(plateau* p) //méthode qui renvoie le nombre d'erreur total dan
 
 void affectBloc(plateau* p,bloc* b,int x,int y) //méthode qui affecte au bloc en position x,y les paramètres du bloc b
 {
-	p->l[x].rangee[y]=*b;
+	p->l[x]->rangee[y]=b;
 }
 
 
 int verifRound(plateau* p,int x,int y)//renvoie le nombre d'erreurs que le bloc en x,y a avec les blocs autour de lui (max 4) et rempli le tableau cote du bloc qui correspond aux erreurs éventuelles
 {
-	bloc b=p->l[x].rangee[y];
+	bloc* b=p->l[x]->rangee[y];
 	int erreur=0;
 
 
 	if(y==0)
 	{
-		if(verifBloc(&b,&p->l[x].rangee[p->taille-1],3))
+		if(verifBloc(b,p->l[x]->rangee[p->taille-1],3))
 		{
 			erreur++;
-			b.cote[3]=1;
+			b->cote[3]=1;
 		}
 		else
 		{
-			b.cote[3]=0;
+			b->cote[3]=0;
 		}
-		if(verifBloc(&b,&p->l[x].rangee[y+1],1))
+		if(verifBloc(b,p->l[x]->rangee[y+1],1))
 		{
 			erreur++;
-			b.cote[1]=1;
+			b->cote[1]=1;
 		}
 		else
 		{
-			b.cote[1]=0;
+			b->cote[1]=0;
 		}
 	 }
 	if(y==p->taille-1)
 	{
-		if(verifBloc(&b,&p->l[x].rangee[0],1))
+		if(verifBloc(b,p->l[x]->rangee[0],1))
 		{
 			erreur++;
-			b.cote[1]=1;
+			b->cote[1]=1;
 		}
 		else
 		{
-			b.cote[1]=0;
+			b->cote[1]=0;
 		}
-		if(verifBloc(&b,&p->l[x].rangee[y-1],1))
+		if(verifBloc(b,p->l[x]->rangee[y-1],1))
 		{
 			erreur++;
-			b.cote[3]=1;
+			b->cote[3]=1;
 		}
 		else
 		{
-			b.cote[3]=0;
+			b->cote[3]=0;
 		}
 	}
 	if(y!=0 && y!=p->taille-1)
 	{
-		if(verifBloc(&b,&p->l[x].rangee[y+1],0))
+		if(verifBloc(b,p->l[x]->rangee[y+1],0))
 		{
 			erreur++;
-			b.cote[0]=1;
+			b->cote[0]=1;
 		}
 		else
 		{
-			b.cote[0]=0;
+			b->cote[0]=0;
 		}
-		if(verifBloc(&b,&p->l[x].rangee[y-1],3))
+		if(verifBloc(b,p->l[x]->rangee[y-1],3))
 		{
 			erreur++;
-			b.cote[3]=1;
+			b->cote[3]=1;
 		}
 		else
 		{
-			b.cote[3]=0;
+			b->cote[3]=0;
 		}
 	}
 
 	if(x==0)
 	{
-		if(verifBloc(&b,&p->l[p->taille-1].rangee[y],0))
+		if(verifBloc(b,p->l[p->taille-1]->rangee[y],0))
 		{
 			erreur++;
-			b.cote[0]=1;
+			b->cote[0]=1;
 		}
 		else
 		{
-			b.cote[0]=0;
+			b->cote[0]=0;
 		}
-		if(verifBloc(&b,&p->l[x+1].rangee[y],2))
+		if(verifBloc(b,p->l[x+1]->rangee[y],2))
 		{
 			erreur++;
-			b.cote[2]=1;
+			b->cote[2]=1;
 		}
 		else
 		{
-			b.cote[2]=0;
+			b->cote[2]=0;
 		}
 	 }
  	if(x==p->taille-1)
 	{
-		if(verifBloc(&b,&p->l[x-1].rangee[y],0))
+		if(verifBloc(b,p->l[x-1]->rangee[y],0))
 	 	{
 	 		erreur++;
-	 		b.cote[0]=1;
+	 		b->cote[0]=1;
 		}
 	 	else
 	 	{
-	 		b.cote[0]=0;
+	 		b->cote[0]=0;
 	 	}
-	 	if(verifBloc(&b,&p->l[0].rangee[y],2))
+	 	if(verifBloc(b,p->l[0]->rangee[y],2))
 	 	{
 	 		erreur++;
-	 		b.cote[2]=1;
+	 		b->cote[2]=1;
 	 	}
 	 	else
 	 	{
-	 		b.cote[2]=0;
+	 		b->cote[2]=0;
 	 	}
 	}
  	if(x!=0 && x!=p->taille-1)
 	{
-		if(verifBloc(&b,&p->l[x-1].rangee[y],0))
+		if(verifBloc(b,p->l[x-1]->rangee[y],0))
 	 	{
 	 		erreur++;
-	 		b.cote[0]=1;
+	 		b->cote[0]=1;
 	 	}
 	 	else
 	 	{
-	 		b.cote[0]=0;
+	 		b->cote[0]=0;
 	 	}
-	 	if(verifBloc(&b,&p->l[x+1].rangee[y],2))
+	 	if(verifBloc(b,p->l[x+1]->rangee[y],2))
 	 	{
 	 		erreur++;
-	 		b.cote[2]=1;
+	 		b->cote[2]=1;
 	 	}
 	 	else
 	 	{
-	 		b.cote[2]=0;
+	 		b->cote[2]=0;
 	 	}
 	}
 
@@ -308,51 +307,79 @@ int verifRound(plateau* p,int x,int y)//renvoie le nombre d'erreurs que le bloc 
 
 void swapBloc(plateau* p,int ax,int ay,int bx,int by)//méthode qui permet d'échanger la position de deux blocs
 	{
-		bloc a =p->l[ax].rangee[ay];
-		bloc b = p->l[bx].rangee[by];
-		bloc temp=a;
+		bloc* a =p->l[ax]->rangee[ay];
+		bloc* b = p->l[bx]->rangee[by];
+		bloc* temp=a;
 
-		p->l[ax].rangee[ay]=b;
-		p->l[bx].rangee[by]=temp;
+		p->l[ax]->rangee[ay]=b;
+		p->l[bx]->rangee[by]=temp;
 	}
 
 
 
 void cherchsub(plateau* p,int ax,int ay) //méthode qui permet à l'IA de chercher un bloc pour remplacer ou faire pivoter un des blocs qui a une erreur avec le bloc en position ax,ay
 {
-	bloc a=p->l[ax].rangee[ay];
+	bloc* a=p->l[ax]->rangee[ay];
 	int x=verifRound(p,ax,ay);
 	int bx;
 	int by;
 		for(int m=0;m<4;m++)
 		{
-			int e=a.cote[m]; //NESW
+			int e=a->cote[m]; //NESW
 			if(e)
 			{
 				switch(m)
 				{
 					case 0:
 					{
-						bx=ax-1;
-						by=ay;
+            if(ax==0)
+            {
+              bx=p->taille-1;
+            }
+            else
+            {
+              bx=ax-1;
+            }
+            by=ay;
 						break;
 					}
 					case 1:
 					{
-						bx=ax+1;
-						by=ay;
+						if(ay==p->taille-1)
+            {
+              by=0;
+            }
+            else
+            {
+              by=ay+1;
+            }
+            bx=ax;
 						break;
 					}
 					case 2:
 					{
-						bx=ax;
-						by=ay+1;
+						if(ax==p->taille-1)
+            {
+              bx=0;
+            }
+            else
+            {
+						  bx=ax+1;
+            }
+            by=ay;
 						break;
 					}
 					case 3:
 					{
-						bx=ax;
-						by=ay-1;
+						if(ay==0)
+            {
+              by=p->taille-1;
+            }
+            else
+            {
+						  by=ay-1;
+            }
+            bx=ax;
 						break;
 					}
 				}
@@ -364,7 +391,7 @@ void cherchsub(plateau* p,int ax,int ay) //méthode qui permet à l'IA de cherch
 	{
 		for(int j=0;j<p->taille;j++)
 		{
-			 int z=verifBloc(&a,&(p->l[i].rangee[j]),pb);
+			 int z=verifBloc(a,p->l[i]->rangee[j],pb);
 			 if(z==0)
 			 {
 				 int av=verifPlateau(p);
@@ -406,7 +433,7 @@ void dessin(plateau* p) //méthode qui dessine le plateau à l'écran et le nomb
 		printf("   ");
 		for(int i=0;i<r;i++)
         {
-            char n=getN(&(p->l[k].rangee[i]));
+            char n=getN(p->l[k]->rangee[i]);
             printf("  %c  ",n);
         }
         printf("\n");
@@ -414,15 +441,15 @@ void dessin(plateau* p) //méthode qui dessine le plateau à l'écran et le nomb
         printf("%c  ",q);
         for(int i=0;i<r;i++)
         {
-            char o=getO(&(p->l[k].rangee[i]));
-            char e=getE(&(p->l[k].rangee[i]));
+            char o=getO(p->l[k]->rangee[i]);
+            char e=getE(p->l[k]->rangee[i]);
             printf("%c # %c",o,e);
         }
         printf("\n");
         printf("   ");
         for(int i=0;i<r;i++)
         {
-            char s=getS(&(p->l[k].rangee[i]));
+            char s=getS(p->l[k]->rangee[i]);
             printf("  %c  ",s);
         }
         printf("\n");
@@ -436,17 +463,22 @@ void dessin(plateau* p) //méthode qui dessine le plateau à l'écran et le nomb
 
 void initLigne(ligne* l,int t) //méthode qui initialise une ligne
 {
-	l->rangee=(bloc*)malloc(t*sizeof(bloc));
-	l->taille=t;
+  l->taille=t;
+	l->rangee=(bloc**)malloc(t*sizeof(bloc*));
+  for(int i=0;i<t;i++)
+  {
+    l->rangee[i]=(bloc*)malloc(sizeof(bloc));
+  }
 }
 
 void initPlateau(plateau* p, int t) //méthode qui initialise le plateau
 {
-	p->l=(ligne*)malloc(t*sizeof(ligne));
+	p->l=(ligne**)malloc(t*sizeof(ligne*));
 	p->taille=t;
 	for(int i=0;i<t;i++)
 	{
-		initLigne(&(p->l[i]),t);
+    p->l[i]=(ligne*)malloc(sizeof(ligne));
+		initLigne(p->l[i],t);
 	}
 }
 
@@ -459,7 +491,7 @@ void freeL(ligne* l)
 {
 	for(int i=0;i<l->taille;i++)
 	{
-		freeB(&l->rangee[i]);
+		freeB(l->rangee[i]);
 	}
 	free(l);
 }
@@ -468,7 +500,7 @@ void freeP(plateau* p)
 {//l'erreur vient p-e du fait que y a pas de taille dans les struct de base pour l et rangee
 	for(int i=0;i<p->taille;i++)
 	{
-		freeL(&p->l[i]);
+		freeL(p->l[i]);
 	}
 	free(p);
 }
@@ -533,11 +565,11 @@ void rotaBloc(plateau* p,char* c) //méthode qui permet de faire pivoter un bloc
 		if(c[1]==i+'1') { k=i;}
 	}
 
-	bloc b=p->l[l].rangee[k];
-	char n=getN(&b);
-	char e=getE(&b);
-	char s=getS(&b);
-	char o=getO(&b);
+	bloc* b=p->l[l]->rangee[k];
+	char n=getN(b);
+	char e=getE(b);
+	char s=getS(b);
+	char o=getO(b);
 	bloc* b2=creerBloc(o,n,e,s);
 	affectBloc(p,b2,l,k);
 }
@@ -549,7 +581,7 @@ void remplirPlateau(plateau* p) //méthode qui rempli les lignes du plateau avec
 	srand ( time(NULL) );
 	for(int i=0;i<sf->taille;i++)
 	{
-		for(int j=0;j<sf->l->taille;j++)
+		for(int j=0;j<sf->taille;j++)
 		{
 			if(i==0)
 			{
@@ -564,11 +596,11 @@ void remplirPlateau(plateau* p) //méthode qui rempli les lignes du plateau avec
 				}
 				else
 				{
-					if(j==sf->l->taille-1)
+					if(j==sf->taille-1)
 					{
 						int c1=rand()%4;char n='A'+c1;
 						int c3=rand()%4;char s='A'+c3;
-						bloc* b=creerBloc(n,getO(&sf->l[i].rangee[0]),s,getE(&sf->l[i].rangee[j-1]));
+						bloc* b=creerBloc(n,getO(sf->l[i]->rangee[0]),s,getE(sf->l[i]->rangee[j-1]));
 						affectBloc(sf,b,i,j);
 					}
 					else
@@ -576,7 +608,7 @@ void remplirPlateau(plateau* p) //méthode qui rempli les lignes du plateau avec
 						int c1=rand()%4;char n='A'+c1;
 						int c2=rand()%4;char e='A'+c2;
 						int c3=rand()%4;char s='A'+c3;
-						bloc* b=creerBloc(n,e,s,getE(&sf->l[i].rangee[j-1]));
+						bloc* b=creerBloc(n,e,s,getE(sf->l[i]->rangee[j-1]));
 						affectBloc(sf,b,i,j);
 					}
 				}
@@ -589,20 +621,20 @@ void remplirPlateau(plateau* p) //méthode qui rempli les lignes du plateau avec
 					{
 						int c2=rand()%4;char e='A'+c2;
 						int c4=rand()%4;char o='A'+c4;
-						bloc* b=creerBloc(getS(&sf->l[i-1].rangee[j]),e,getN(&sf->l[0].rangee[j]),o);
+						bloc* b=creerBloc(getS(sf->l[i-1]->rangee[j]),e,getN(sf->l[0]->rangee[j]),o);
 						affectBloc(sf,b,i,j);
 					}
 					else
 					{
-						if(j==sf->l->taille-1)
+						if(j==sf->taille-1)
 						{
-							bloc* b=creerBloc(getS(&sf->l[i-1].rangee[j]),getO(&sf->l[i].rangee[0]),getN(&sf->l[0].rangee[j]),getE(&sf->l[i].rangee[j-1]));
+							bloc* b=creerBloc(getS(sf->l[i-1]->rangee[j]),getO(sf->l[i]->rangee[0]),getN(sf->l[0]->rangee[j]),getE(sf->l[i]->rangee[j-1]));
 							affectBloc(sf,b,i,j);
 						}
 						else
 						{
 							int c2=rand()%4;char e='A'+c2;
-							bloc* b=creerBloc(getS(&sf->l[i-1].rangee[j]),e,getN(&sf->l[0].rangee[j]),getE(&sf->l[i].rangee[j-1]));
+							bloc* b=creerBloc(getS(sf->l[i-1]->rangee[j]),e,getN(sf->l[0]->rangee[j]),getE(sf->l[i]->rangee[j-1]));
 							affectBloc(sf,b,i,j);
 						}
 					}
@@ -614,22 +646,22 @@ void remplirPlateau(plateau* p) //méthode qui rempli les lignes du plateau avec
 						int c2=rand()%4;char e='A'+c2;
 						int c3=rand()%4;char s='A'+c3;
 						int c4=rand()%4;char o='A'+c4;
-						bloc* b=creerBloc(getS(&sf->l[i-1].rangee[j]),e,s,o);
+						bloc* b=creerBloc(getS(sf->l[i-1]->rangee[j]),e,s,o);
 						affectBloc(sf,b,i,j);
 					}
 					else
 					{
-						if(j==sf->l->taille-1)
+						if(j==sf->taille-1)
 						{
 							int c3=rand()%4;char s='A'+c3;
-							bloc* b=creerBloc(getS(&sf->l[i-1].rangee[j]),getO(&sf->l[i].rangee[0]),s,getE(&sf->l[i].rangee[j-1]));
+							bloc* b=creerBloc(getS(sf->l[i-1]->rangee[j]),getO(sf->l[i]->rangee[0]),s,getE(sf->l[i]->rangee[j-1]));
 							affectBloc(sf,b,i,j);
 						}
 						else
 						{
 							int c2=rand()%4;char e='A'+c2;
 							int c3=rand()%4;char s='A'+c3;
-							bloc* b=creerBloc(getS(&sf->l[i-1].rangee[j]),e,s,getE(&sf->l[i].rangee[j-1]));
+							bloc* b=creerBloc(getS(sf->l[i-1]->rangee[j]),e,s,getE(sf->l[i]->rangee[j-1]));
 							affectBloc(sf,b,i,j);
 						}
 					}
@@ -638,9 +670,11 @@ void remplirPlateau(plateau* p) //méthode qui rempli les lignes du plateau avec
 		}
 	}
 
+
+
 	for(int i=0;i<sf->taille;i++)
 	{
-		for(int j=0;j<sf->l->taille;j++)
+		for(int j=0;j<sf->taille;j++)
 		{
 			int rota=1+rand()%4;
 			char m[3];
@@ -659,18 +693,18 @@ void remplirPlateau(plateau* p) //méthode qui rempli les lignes du plateau avec
 	tab=(int**)malloc(p->taille*sizeof(int*));
 	for(int i=0;i<p->taille;i++)
 	{
-		tab[i]=(int*)calloc(p->l->taille,sizeof(int));
+		tab[i]=(int*)calloc(p->taille,sizeof(int));
 	}
 	for(int i=0;i<p->taille;i++)
 	{
-		for(int j=0;j<p->l->taille;j++)
+		for(int j=0;j<p->taille;j++)
 		{
 			do
 			{
 				k=rand()%sf->taille;
 				l=rand()%sf->taille;
 			}while(tab[k][l]);
-			p->l[i].rangee[j]=sf->l[k].rangee[l];
+			p->l[i]->rangee[j]=sf->l[k]->rangee[l];
 			tab[k][l]=1;
 		}
 	}
@@ -689,7 +723,7 @@ void ordi(plateau* p) //méthode qui correspond aux actions que fait l'IA
 			n= verifPlateau(p);
 			for(int i=0;i<p->taille;i++)
 			{
-				for(int j=0;j<p->l->taille;j++)
+				for(int j=0;j<p->taille;j++)
 				{
 					cherchsub(p,i,j);
 				}
@@ -700,7 +734,7 @@ void ordi(plateau* p) //méthode qui correspond aux actions que fait l'IA
 
 		for(int i=0;i<p->taille;i++)
 		{
-			for(int j=0;j<p->l->taille;j++)
+			for(int j=0;j<p->taille;j++)
 			{
 				for(int k=0;k<4;k++)
 				{
@@ -735,6 +769,7 @@ void joueur(plateau* p)// méthode qui correspond à un joueur utilisateur
 		dessin(p);
 		printf("Taper 1 pour échanger deux blocs ou 2 pour faire tourner en bloc : ");
 		int q;
+    int r=p->taille-1;
 		scanf("%d",&q);
 		printf("\n");
 		if(q==1)
@@ -743,7 +778,8 @@ void joueur(plateau* p)// méthode qui correspond à un joueur utilisateur
 			char s[4];
 			scanf("%s",s);
 			printf("\n");
-			if(strlen(s)==4){
+		  if(strlen(s)==4 && s[0]>='a' && s[0]<='a'+r && s[2]>='a' && s[2]<='a'+r && s[1]>='1' && s[1]<='1'+r && s[3]>='1' && s[3]<='1'+r )
+		{
 				int s1,s2,s3,s4;
 				s1=LireDX(p,s);
 				s2=LireDY(p,s);
@@ -752,8 +788,7 @@ void joueur(plateau* p)// méthode qui correspond à un joueur utilisateur
 				swapBloc(p,s1,s2,s3,s4);
 			}
 			else{
-				printf("erreur");
-				printf("\n");
+				printf("erreur\n");
 			}
 
 		}
@@ -769,9 +804,16 @@ void joueur(plateau* p)// méthode qui correspond à un joueur utilisateur
 				printf("Donner le nombre de quarts de tour a faire :");
 				scanf("%d",&x);
 				printf("\n");
-				for(int i=0;i<x;i++)
+				if(strlen(s)==2 && s[0]>='a' && s[0]<='a'+r && s[1]>='1' && s[1]<='1'+r)
 				{
-					rotaBloc(p,s);
+					for(int i=0;i<x;i++)
+					{
+						rotaBloc(p,s);
+					}
+				}
+				else
+				{
+					printf(" erreur \n");
 				}
 			}
 			else
@@ -782,7 +824,7 @@ void joueur(plateau* p)// méthode qui correspond à un joueur utilisateur
 		}
 	}
 	dessin(p);
-	printf("La partie a été résolue en %d échanges",nbechange);
+	printf("La partie a été résolue en %d échanges\n",nbechange);
 }
 
 
@@ -808,7 +850,7 @@ int main()
 	printf("\n");
 	if(x==1){
 		joueur(p);
-		printf("Partie terminée");
+		printf("Partie terminée\n");
 	}
 	if(x==2)
 		{
@@ -816,11 +858,11 @@ int main()
 		}
 	if(x!=1 || x!=2)
 	{
-		printf("erreur");
+		printf("erreur\n");
 	}
 }
 else{
-	printf("Dimension incorrecte");
+	printf("Dimension incorrecte\n");
 }
 
 
