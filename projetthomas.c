@@ -811,7 +811,7 @@ void joueur(plateau* p)// méthode qui correspond à un joueur utilisateur
 						rotaBloc(p,s);
 					}
 				}
-				else
+				if(q!=1 && q!=2)
 				{
 					printf(" erreur \n");
 				}
