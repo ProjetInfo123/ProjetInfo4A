@@ -4,15 +4,15 @@
 #include <time.h>
 
 /**
-* Projet de Info4A -2020
+* Projet Info4A variante J 2020
 * Auteur : Thomas Eguienta & Azeddine Assaghir
 */
 
 
-typedef struct   //structure qui représente un bloc avec ses 4 cotés et un tableau qui représente les erreurs qu'il a avec les blocs autour de lui
+typedef struct //structure qui représente un bloc avec ses 4 cotés et un tableau qui représente les erreurs qu'il a avec les blocs autour de lui
 {
 	char nord,est,ouest,sud;
-	int cote[4]; //NESW
+	int cote[4]; //NESO
 }bloc;
 
 
@@ -29,7 +29,7 @@ typedef struct //structure qui représente le plateau qui est composé de plusie
 	ligne** l;
 }plateau;
 
-bloc* creerBloc(char n,char e,char s,char o) //méthode pour créer un bloc en spécifiant les lettes
+bloc* creerBloc(char n,char e,char s,char o) //méthode pour créer un bloc en spécifiant les lettres
 {
 		bloc* b=(bloc*)malloc(sizeof(bloc));
 		b->nord=n;
@@ -62,27 +62,7 @@ char getS(bloc* b)
 	return b->sud;
 }
 
-
-int recupErreur(plateau* p,int ax,int ay,int bx,int by) //renvoie le coté problematique entre le bloc en ax,ay et bx,by
-{
-		if(ax==bx)
-		{
-			if(ay>by){ return 2;}
-			else{
-				return 0;
-			}
-		}
-		else{
-			if(ax<bx){ return 1;}
-			else{
-				if(ax>bx){ return 3;}
-			}
-		}
-		return -1;
-}
-
-
-int verifBloc(bloc* a,bloc* b,int cote) //verifie si il y une erreur entre les deux blocs en fonction du coté donné, renvoie 1 si il y a une erreur et 0 sinon
+int verifBloc(bloc* a,bloc* b,int cote) //verifie s'il y une erreur entre les deux blocs donnés en paramètre en fonction du coté donné, renvoie 1 s'il y a une erreur et 0 sinon
 {
 	int erreur=0;
 	if (cote==2)
@@ -161,13 +141,13 @@ int verifPlateau(plateau* p) //méthode qui renvoie le nombre d'erreur total dan
 	return erreur;
 }
 
-void affectBloc(plateau* p,bloc* b,int x,int y) //méthode qui affecte au bloc en position x,y les paramètres du bloc b
+void affectBloc(plateau* p,bloc* b,int x,int y) //méthode qui affecte au bloc en position x,y du plateau les valeurs du bloc b
 {
 	p->l[x]->rangee[y]=b;
 }
 
 
-int verifRound(plateau* p,int x,int y)//renvoie le nombre d'erreurs que le bloc en x,y a avec les blocs autour de lui (max 4) et rempli le tableau cote du bloc qui correspond aux erreurs éventuelles
+int verifRound(plateau* p,int x,int y)//renvoie le nombre d'erreurs que le bloc en x,y a avec les blocs autour de lui (max 4) et remplit le tableau cote du bloc qui correspond aux erreurs éventuelles
 {
 	bloc* b=p->l[x]->rangee[y];
 	int erreur=0;
@@ -317,15 +297,15 @@ void swapBloc(plateau* p,int ax,int ay,int bx,int by)//méthode qui permet d'éc
 
 
 
-void cherchsub(plateau* p,int ax,int ay) //méthode qui permet à l'IA de chercher un bloc pour remplacer ou faire pivoter un des blocs qui a une erreur avec le bloc en position ax,ay
+void cherchsub(plateau* p,int ax,int ay) //méthode qui permet à l'IA de trouver un bloc qui n'a pas de problème le bloc dont ses coordonnées sont en paramètre
 {
 	bloc* a=p->l[ax]->rangee[ay];
-	int x=verifRound(p,ax,ay);
 	int bx;
 	int by;
 		for(int m=0;m<4;m++)
 		{
 			int e=a->cote[m]; //NESW
+			int pb;
 			if(e)
 			{
 				switch(m)
@@ -341,6 +321,7 @@ void cherchsub(plateau* p,int ax,int ay) //méthode qui permet à l'IA de cherch
               bx=ax-1;
             }
             by=ay;
+						pb=0;
 						break;
 					}
 					case 1:
@@ -354,6 +335,7 @@ void cherchsub(plateau* p,int ax,int ay) //méthode qui permet à l'IA de cherch
               by=ay+1;
             }
             bx=ax;
+						pb=1;
 						break;
 					}
 					case 2:
@@ -367,6 +349,7 @@ void cherchsub(plateau* p,int ax,int ay) //méthode qui permet à l'IA de cherch
 						  bx=ax+1;
             }
             by=ay;
+						pb=2;
 						break;
 					}
 					case 3:
@@ -380,13 +363,11 @@ void cherchsub(plateau* p,int ax,int ay) //méthode qui permet à l'IA de cherch
 						  by=ay-1;
             }
             bx=ax;
+						pb=3;
 						break;
 					}
 				}
-	int pb=recupErreur(p,ax,ay,bx,by);
 
-
-						 //comparer les NESW de top et de b pour voir le nombre d'erreur qu'il y aurait si on les swap, garder le nombre d'erreur mn
 	for(int i=0;i<p->taille;i++)
 	{
 		for(int j=0;j<p->taille;j++)
@@ -399,7 +380,7 @@ void cherchsub(plateau* p,int ax,int ay) //méthode qui permet à l'IA de cherch
 				 int ap=verifPlateau(p);
 				 if(av<ap)
 				 {
-					 swapBloc(p,bx,by,i,j);            //trouver un moyen de determiner si on swap ou on rota et si on rota bah combien de fois
+					 swapBloc(p,bx,by,i,j);
 				 }
 			 	}
 			}
@@ -461,7 +442,7 @@ void dessin(plateau* p) //méthode qui dessine le plateau à l'écran et le nomb
 
 }
 
-void initLigne(ligne* l,int t) //méthode qui initialise une ligne
+void initLigne(ligne* l,int t) //méthode qui initialise une structure de type ligne
 {
   l->taille=t;
 	l->rangee=(bloc**)malloc(t*sizeof(bloc*));
@@ -471,7 +452,7 @@ void initLigne(ligne* l,int t) //méthode qui initialise une ligne
   }
 }
 
-void initPlateau(plateau* p, int t) //méthode qui initialise le plateau
+void initPlateau(plateau* p, int t) //méthode qui initialise une structure de type plateau
 {
 	p->l=(ligne**)malloc(t*sizeof(ligne*));
 	p->taille=t;
@@ -482,12 +463,12 @@ void initPlateau(plateau* p, int t) //méthode qui initialise le plateau
 	}
 }
 
-void freeB(bloc* b)
+void freeB(bloc* b) //méthode qui permet de libérer en mémoire une structure de type bloc
 {
 	free(b);
 }
 
-void freeL(ligne* l)
+void freeL(ligne* l) //méthode qui permet de libérer en mémoire une structure de type ligne
 {
 	for(int i=0;i<l->taille;i++)
 	{
@@ -496,8 +477,8 @@ void freeL(ligne* l)
 	free(l);
 }
 
-void freeP(plateau* p)
-{//l'erreur vient p-e du fait que y a pas de taille dans les struct de base pour l et rangee
+void freeP(plateau* p) //méthode qui permet de libérer en mémoire une structure de type plateau
+{
 	for(int i=0;i<p->taille;i++)
 	{
 		freeL(p->l[i]);
@@ -506,7 +487,7 @@ void freeP(plateau* p)
 }
 
 
-// 4 méthodes qui permettent de récuperer les coordonnés que l'utilisateur peut entrer avec par exemple b2c4
+// 4 méthodes qui permettent de récuperer les coordonnées que l'utilisateur peut entrer avec par exemple b2c4
 int LireDX(plateau* p,char* e)
 {
 
@@ -552,7 +533,7 @@ int LireFY(plateau* p,char* e)
 }
 
 
-void rotaBloc(plateau* p,char* c) //méthode qui permet de faire pivoter un bloc a partir de sa position entrée par l'utilisateur comme b2
+void rotaBloc(plateau* p,char* c) //méthode qui permet de faire pivoter un bloc d'un quart de tour vers la droite à partir de sa position entrée par l'utilisateur comme b2
 {
 	int l=0;
 	int k=0;
@@ -574,8 +555,10 @@ void rotaBloc(plateau* p,char* c) //méthode qui permet de faire pivoter un bloc
 	affectBloc(p,b2,l,k);
 }
 
-void remplirPlateau(plateau* p) //méthode qui rempli les lignes du plateau avec des blocs
+void remplirPlateau(plateau* p) //méthode qui va créer une solution fixe puis répartir de manière aléatoire les blocs de cette solution
 {
+
+	//dans un premier temps, on créé la solution fixe avec le code ci-dessous
 	plateau* sf=(plateau*)malloc(sizeof(plateau));
 	initPlateau(sf,p->taille);
 	srand ( time(NULL) );
@@ -672,6 +655,7 @@ void remplirPlateau(plateau* p) //méthode qui rempli les lignes du plateau avec
 
 
 
+	//ensuite, les blocs sont pivotés avec un nombre aléatoire de quart de tour
 	for(int i=0;i<sf->taille;i++)
 	{
 		for(int j=0;j<sf->taille;j++)
@@ -688,6 +672,7 @@ void remplirPlateau(plateau* p) //méthode qui rempli les lignes du plateau avec
 		}
 	}
 
+	//enfin, les blocs pivotés sont placés à une position aléatoire dans la plateau en cours
 	int k,l;
 	int** tab;
 	tab=(int**)malloc(p->taille*sizeof(int*));
@@ -712,8 +697,9 @@ void remplirPlateau(plateau* p) //méthode qui rempli les lignes du plateau avec
 }
 
 
-void ordi(plateau* p) //méthode qui correspond aux actions que fait l'IA
+void ordi(plateau* p) //méthode qui permet la résolution du puzzle par l'IA
 {
+	//dans cette partie du code, la fonction va appeler la méthode "cherchsub" pour chaque bloc du plateau
 	while(verifPlateau(p)!=0)
 	{
 		int n;
@@ -731,7 +717,7 @@ void ordi(plateau* p) //méthode qui correspond aux actions que fait l'IA
 			m=verifPlateau(p);
 		}while(n!=m);
 
-
+		//ici, on lance une procédure de rotation des blocs si le code au-dessus ne change pas les erreurs présentes dans le plateau
 		for(int i=0;i<p->taille;i++)
 		{
 			for(int j=0;j<p->taille;j++)
@@ -760,7 +746,7 @@ void ordi(plateau* p) //méthode qui correspond aux actions que fait l'IA
 }
 
 
-void joueur(plateau* p)// méthode qui correspond à un joueur utilisateur
+void joueur(plateau* p)// méthode qui permet de gérer une partie pour un utilisateur et appliquer les choix faits par celui-ci
 {
 	int nbechange=0;
 	while(verifPlateau(p)!=0)
@@ -835,7 +821,7 @@ int main()
 {
 	plateau* p=(plateau*)malloc(sizeof(plateau));
 	printf(" Donner la dimension du plateau entre 4 et 7 :\n" );
-	int z,x,c;
+	int z,x;
 	scanf("%d",&z);
 	printf("\n");
 	if(z>=4 && z<=7){
